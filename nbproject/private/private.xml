@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/main/Main.java</file>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/dominio/Cliente.java</file>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/dominio/Mecanico.java</file>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/controladores/VehiculoJpaController.java</file>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/dominio/Garantia.java</file>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/dominio/Administrador.java</file>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/dominio/Vehiculo.java</file>
+            <file>file:/D:/ProyectosNetBeans/Coreaa/src/META-INF/persistence.xml</file>
+        </group>
+    </open-files>
+</project-private>
