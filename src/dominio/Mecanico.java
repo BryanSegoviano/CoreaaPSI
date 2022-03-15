@@ -59,13 +59,6 @@ public class Mecanico implements Serializable {
         this.idmecanico = idmecanico;
     }
 
-    public Mecanico(String nombre, String telefono, String usuario, String password) {
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.usuario = usuario;
-        this.password = password;
-    }
-
     public Mecanico(Integer idmecanico, String nombre, String telefono, String usuario, String password) {
         this.idmecanico = idmecanico;
         this.nombre = nombre;

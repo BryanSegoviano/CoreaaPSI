@@ -13,6 +13,9 @@
     <class>dominio.Garantia</class>
     <class>dominio.Pieza</class>
     <class>dominio.Venta</class>
+    <class>dominio.Relventaservicio</class>
+    <class>dominio.Relventapieza</class>
+    <class>dominio.Relclientevehiculo</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/coreaa?useUnicode=true&amp;useJDBCCompliantTimezoneShift=true&amp;useLegacyDatetimeCode=false&amp;serverTimezone=GMT-7"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

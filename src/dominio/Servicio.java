@@ -53,15 +53,14 @@ public class Servicio implements Serializable {
     @Basic(optional = false)
     @Column(name = "costo")
     private double costo;
+    @Basic(optional = false)
     @Column(name = "concepto")
     private String concepto;
     @Column(name = "proximo_servicio")
     @Temporal(TemporalType.DATE)
     private Date proximoServicio;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idservicio")
-    private List<RelServicioPieza> relServicioPiezaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idservicios")
-    private List<Venta> ventaList;
+    private List<Relventaservicio> relventaservicioList;
 
     public Servicio() {
     }
@@ -70,10 +69,24 @@ public class Servicio implements Serializable {
         this.idservicio = idservicio;
     }
 
-    public Servicio(Integer idservicio, Date fecha, double costo) {
+    public Servicio(Date fecha, double costo, String concepto) {
+        this.fecha = fecha;
+        this.costo = costo;
+        this.concepto = concepto;
+    }
+
+    public Servicio(Date fecha, double costo, String concepto, Date proximoServicio) {
+        this.fecha = fecha;
+        this.costo = costo;
+        this.concepto = concepto;
+        this.proximoServicio = proximoServicio;
+    }
+
+    public Servicio(Integer idservicio, Date fecha, double costo, String concepto) {
         this.idservicio = idservicio;
         this.fecha = fecha;
         this.costo = costo;
+        this.concepto = concepto;
     }
 
     public Integer getIdservicio() {
@@ -117,21 +130,12 @@ public class Servicio implements Serializable {
     }
 
     @XmlTransient
-    public List<RelServicioPieza> getRelServicioPiezaList() {
-        return relServicioPiezaList;
+    public List<Relventaservicio> getRelventaservicioList() {
+        return relventaservicioList;
     }
 
-    public void setRelServicioPiezaList(List<RelServicioPieza> relServicioPiezaList) {
-        this.relServicioPiezaList = relServicioPiezaList;
-    }
-
-    @XmlTransient
-    public List<Venta> getVentaList() {
-        return ventaList;
-    }
-
-    public void setVentaList(List<Venta> ventaList) {
-        this.ventaList = ventaList;
+    public void setRelventaservicioList(List<Relventaservicio> relventaservicioList) {
+        this.relventaservicioList = relventaservicioList;
     }
 
     @Override

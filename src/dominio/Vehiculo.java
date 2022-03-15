@@ -52,9 +52,7 @@ public class Vehiculo implements Serializable {
     @Column(name = "marca")
     private String marca;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idvehiculo")
-    private List<Venta> ventaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idvehiculo")
-    private List<Cliente> clienteList;
+    private List<Relclientevehiculo> relclientevehiculoList;
 
     public Vehiculo() {
     }
@@ -67,8 +65,6 @@ public class Vehiculo implements Serializable {
         this.modelo = modelo;
         this.nombre = nombre;
         this.marca = marca;
-        this.ventaList = ventaList;
-        this.clienteList = clienteList;
     }
 
     public Vehiculo(Integer idvehiculo, String modelo, String nombre, String marca) {
@@ -111,21 +107,12 @@ public class Vehiculo implements Serializable {
     }
 
     @XmlTransient
-    public List<Venta> getVentaList() {
-        return ventaList;
+    public List<Relclientevehiculo> getRelclientevehiculoList() {
+        return relclientevehiculoList;
     }
 
-    public void setVentaList(List<Venta> ventaList) {
-        this.ventaList = ventaList;
-    }
-
-    @XmlTransient
-    public List<Cliente> getClienteList() {
-        return clienteList;
-    }
-
-    public void setClienteList(List<Cliente> clienteList) {
-        this.clienteList = clienteList;
+    public void setRelclientevehiculoList(List<Relclientevehiculo> relclientevehiculoList) {
+        this.relclientevehiculoList = relclientevehiculoList;
     }
 
     @Override
@@ -148,16 +135,9 @@ public class Vehiculo implements Serializable {
         return true;
     }
 
-//    @Override
-//    public String toString() {
-//        return "dominio.Vehiculo[ idvehiculo=" + idvehiculo + " ]";
-//    }
-
     @Override
     public String toString() {
-        return "Vehiculo{" + "idvehiculo=" + idvehiculo + ", modelo=" + modelo + ", nombre=" + nombre + ", marca=" + marca + '}';
+        return "dominio.Vehiculo[ idvehiculo=" + idvehiculo + " ]";
     }
-    
-    
     
 }

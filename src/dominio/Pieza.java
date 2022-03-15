@@ -58,16 +58,22 @@ public class Pieza implements Serializable {
     @Column(name = "fecha_garantia")
     @Temporal(TemporalType.DATE)
     private Date fechaGarantia;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpieaza")
-    private List<RelServicioPieza> relServicioPiezaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpieza")
     private List<RelCompraPieza> relCompraPiezaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idpieza")
+    private List<Relventapieza> relventapiezaList;
 
     public Pieza() {
     }
 
     public Pieza(Integer idpieza) {
         this.idpieza = idpieza;
+    }
+
+    public Pieza(String nombre, double costo, int cantidad) {
+        this.nombre = nombre;
+        this.costo = costo;
+        this.cantidad = cantidad;
     }
 
     public Pieza(Integer idpieza, String nombre, double costo, int cantidad) {
@@ -118,21 +124,21 @@ public class Pieza implements Serializable {
     }
 
     @XmlTransient
-    public List<RelServicioPieza> getRelServicioPiezaList() {
-        return relServicioPiezaList;
-    }
-
-    public void setRelServicioPiezaList(List<RelServicioPieza> relServicioPiezaList) {
-        this.relServicioPiezaList = relServicioPiezaList;
-    }
-
-    @XmlTransient
     public List<RelCompraPieza> getRelCompraPiezaList() {
         return relCompraPiezaList;
     }
 
     public void setRelCompraPiezaList(List<RelCompraPieza> relCompraPiezaList) {
         this.relCompraPiezaList = relCompraPiezaList;
+    }
+
+    @XmlTransient
+    public List<Relventapieza> getRelventapiezaList() {
+        return relventapiezaList;
+    }
+
+    public void setRelventapiezaList(List<Relventapieza> relventapiezaList) {
+        this.relventapiezaList = relventapiezaList;
     }
 
     @Override

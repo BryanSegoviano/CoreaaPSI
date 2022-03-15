@@ -7,7 +7,9 @@ package dominio;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,10 +19,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,7 +37,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Venta.findAll", query = "SELECT v FROM Venta v"),
     @NamedQuery(name = "Venta.findByIdventa", query = "SELECT v FROM Venta v WHERE v.idventa = :idventa"),
     @NamedQuery(name = "Venta.findByFecha", query = "SELECT v FROM Venta v WHERE v.fecha = :fecha"),
-    @NamedQuery(name = "Venta.findByTotalVenta", query = "SELECT v FROM Venta v WHERE v.totalVenta = :totalVenta"),
+    @NamedQuery(name = "Venta.findByTotal", query = "SELECT v FROM Venta v WHERE v.total = :total"),
     @NamedQuery(name = "Venta.findByNotas", query = "SELECT v FROM Venta v WHERE v.notas = :notas")})
 public class Venta implements Serializable {
 
@@ -48,19 +52,17 @@ public class Venta implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date fecha;
     @Basic(optional = false)
-    @Column(name = "total_venta")
-    private double totalVenta;
+    @Column(name = "total")
+    private double total;
     @Column(name = "notas")
     private String notas;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idventa")
+    private List<Relventaservicio> relventaservicioList;
     @JoinColumn(name = "idcliente", referencedColumnName = "idcliente")
     @ManyToOne(optional = false)
     private Cliente idcliente;
-    @JoinColumn(name = "idservicios", referencedColumnName = "idservicio")
-    @ManyToOne(optional = false)
-    private Servicio idservicios;
-    @JoinColumn(name = "idvehiculo", referencedColumnName = "idvehiculo")
-    @ManyToOne(optional = false)
-    private Vehiculo idvehiculo;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idventa")
+    private List<Relventapieza> relventapiezaList;
 
     public Venta() {
     }
@@ -69,10 +71,17 @@ public class Venta implements Serializable {
         this.idventa = idventa;
     }
 
-    public Venta(Integer idventa, Date fecha, double totalVenta) {
+    public Venta(Date fecha, double total, String notas, Cliente idcliente) {
+        this.fecha = fecha;
+        this.total = total;
+        this.notas = notas;
+        this.idcliente = idcliente;
+    }
+
+    public Venta(Integer idventa, Date fecha, double total) {
         this.idventa = idventa;
         this.fecha = fecha;
-        this.totalVenta = totalVenta;
+        this.total = total;
     }
 
     public Integer getIdventa() {
@@ -91,12 +100,12 @@ public class Venta implements Serializable {
         this.fecha = fecha;
     }
 
-    public double getTotalVenta() {
-        return totalVenta;
+    public double getTotal() {
+        return total;
     }
 
-    public void setTotalVenta(double totalVenta) {
-        this.totalVenta = totalVenta;
+    public void setTotal(double total) {
+        this.total = total;
     }
 
     public String getNotas() {
@@ -107,6 +116,15 @@ public class Venta implements Serializable {
         this.notas = notas;
     }
 
+    @XmlTransient
+    public List<Relventaservicio> getRelventaservicioList() {
+        return relventaservicioList;
+    }
+
+    public void setRelventaservicioList(List<Relventaservicio> relventaservicioList) {
+        this.relventaservicioList = relventaservicioList;
+    }
+
     public Cliente getIdcliente() {
         return idcliente;
     }
@@ -115,20 +133,13 @@ public class Venta implements Serializable {
         this.idcliente = idcliente;
     }
 
-    public Servicio getIdservicios() {
-        return idservicios;
+    @XmlTransient
+    public List<Relventapieza> getRelventapiezaList() {
+        return relventapiezaList;
     }
 
-    public void setIdservicios(Servicio idservicios) {
-        this.idservicios = idservicios;
-    }
-
-    public Vehiculo getIdvehiculo() {
-        return idvehiculo;
-    }
-
-    public void setIdvehiculo(Vehiculo idvehiculo) {
-        this.idvehiculo = idvehiculo;
+    public void setRelventapiezaList(List<Relventapieza> relventapiezaList) {
+        this.relventapiezaList = relventapiezaList;
     }
 
     @Override

@@ -14,8 +14,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -54,10 +52,9 @@ public class Cliente implements Serializable {
     @Column(name = "telefono")
     private String telefono;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcliente")
+    private List<Relclientevehiculo> relclientevehiculoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idcliente")
     private List<Venta> ventaList;
-    @JoinColumn(name = "idvehiculo", referencedColumnName = "idvehiculo")
-    @ManyToOne(optional = false)
-    private Vehiculo idvehiculo;
 
     public Cliente() {
     }
@@ -66,12 +63,10 @@ public class Cliente implements Serializable {
         this.idcliente = idcliente;
     }
 
-    public Cliente(String direccion, String nombre, String telefono, Vehiculo idvehiculo) {
+    public Cliente(String direccion, String nombre, String telefono) {
         this.direccion = direccion;
         this.nombre = nombre;
         this.telefono = telefono;
-        this.ventaList = ventaList;
-        this.idvehiculo = idvehiculo;
     }
 
     public Cliente(Integer idcliente, String direccion, String nombre, String telefono) {
@@ -114,20 +109,21 @@ public class Cliente implements Serializable {
     }
 
     @XmlTransient
+    public List<Relclientevehiculo> getRelclientevehiculoList() {
+        return relclientevehiculoList;
+    }
+
+    public void setRelclientevehiculoList(List<Relclientevehiculo> relclientevehiculoList) {
+        this.relclientevehiculoList = relclientevehiculoList;
+    }
+
+    @XmlTransient
     public List<Venta> getVentaList() {
         return ventaList;
     }
 
     public void setVentaList(List<Venta> ventaList) {
         this.ventaList = ventaList;
-    }
-
-    public Vehiculo getIdvehiculo() {
-        return idvehiculo;
-    }
-
-    public void setIdvehiculo(Vehiculo idvehiculo) {
-        this.idvehiculo = idvehiculo;
     }
 
     @Override

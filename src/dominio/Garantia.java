@@ -47,10 +47,6 @@ public class Garantia implements Serializable {
     public Garantia() {
     }
 
-    public Garantia(Date fechaVencimiento) {
-        this.fechaVencimiento = fechaVencimiento;
-    }
-
     public Garantia(Integer idgarantia) {
         this.idgarantia = idgarantia;
     }
