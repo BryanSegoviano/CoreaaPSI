@@ -3,7 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Vista;
+package presentacion;
+
+import accesoDatos.ClienteJpaController;
+import accesoDatos.RelclientevehiculoJpaController;
+import accesoDatos.RelventaservicioJpaController;
+import accesoDatos.ServicioJpaController;
+import accesoDatos.VehiculoJpaController;
+import accesoDatos.VentaJpaController;
+import controles.Fachada;
+import controles.IFachada;
+import dominio.Cliente;
+import dominio.Relclientevehiculo;
+import dominio.Relventaservicio;
+import dominio.Servicio;
+import dominio.Vehiculo;
+import dominio.Venta;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.persistence.Persistence;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -11,13 +31,21 @@ package Vista;
  */
 public class DlgTotalServicio extends javax.swing.JDialog {
 
-    /**
-     * Creates new form DlgTotalServicio
-     */
-    public DlgTotalServicio(java.awt.Frame parent, boolean modal) {
+    private Venta venta;
+    private Vehiculo vehiculo;
+    private ArrayList<Servicio> listaServicios;
+    private IFachada fachada;
+
+    public DlgTotalServicio(java.awt.Frame parent, boolean modal, Venta venta, ArrayList<Servicio> listaServicios, Vehiculo vehiculo) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
+        this.venta = venta;
+        this.vehiculo = vehiculo;
+        this.listaServicios = listaServicios;
+        this.llenarTablaServicios();
+        this.totalTF.setText(this.venta.getTotal() + "");
+        this.fachada = new Fachada();
     }
 
     /**
@@ -29,21 +57,19 @@ public class DlgTotalServicio extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaConceptos = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        cambioTF = new javax.swing.JTextField();
+        totalTF = new javax.swing.JTextField();
+        pagoTF = new javax.swing.JTextField();
         btnPagar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-
-        jLabel1.setText("Total del servicio");
+        setTitle("Total de la venta");
 
         tablaConceptos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -88,37 +114,36 @@ public class DlgTotalServicio extends javax.swing.JDialog {
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setText("Cambio");
 
-        jTextField1.setEditable(false);
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
+        cambioTF.setEditable(false);
 
-        jTextField2.setEditable(false);
+        totalTF.setEditable(false);
 
         btnPagar.setBackground(new java.awt.Color(0, 204, 0));
         btnPagar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnPagar.setForeground(new java.awt.Color(255, 255, 255));
         btnPagar.setText("Pagar");
+        btnPagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPagarActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setBackground(new java.awt.Color(204, 0, 0));
         btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(20, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(10, 10, 10)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jLabel1))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -126,103 +151,116 @@ public class DlgTotalServicio extends javax.swing.JDialog {
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(36, 36, 36)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(totalTF, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cambioTF, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pagoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnPagar)
+                        .addGap(52, 52, 52)
+                        .addComponent(btnCancelar)
+                        .addGap(4, 4, 4)))
                 .addContainerGap(28, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnPagar)
-                .addGap(52, 52, 52)
-                .addComponent(btnCancelar)
-                .addGap(51, 51, 51))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(totalTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pagoTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                    .addComponent(cambioTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnPagar)
                     .addComponent(btnCancelar))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
+        this.agregarVenta();
+    }//GEN-LAST:event_btnPagarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DlgTotalServicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DlgTotalServicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DlgTotalServicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DlgTotalServicio.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+    private void agregarVenta() {
+//        ClienteJpaController clientes = new ClienteJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
+//        VehiculoJpaController vehiculos = new VehiculoJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
+//        RelclientevehiculoJpaController clientevehiculos = new RelclientevehiculoJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
+//        VentaJpaController ventas = new VentaJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
+//        RelventaservicioJpaController ventasservicio = new RelventaservicioJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
+//        ServicioJpaController servicios = new ServicioJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
+
+        Venta ventaFinal = this.venta;
+        Cliente cliente = ventaFinal.getIdcliente();
+//        clientes.create(cliente);
+        this.fachada.guardarCliente(cliente);
+        Vehiculo vehiculoFinal = this.vehiculo;
+//        vehiculos.create(vehiculoFinal);
+        this.fachada.guardarVehiculo(vehiculo);
+        Relclientevehiculo clienteveh = new Relclientevehiculo(cliente, vehiculoFinal);
+//        clientevehiculos.create(clienteveh);
+        this.fachada.guardarRelclientevehiculo(clienteveh);
+
+        for (int i = 0; i < this.listaServicios.size(); i++) {
+//            servicios.create(this.listaServicios.get(i));
+            this.fachada.guardarServicio(this.listaServicios.get(i));
         }
-        //</editor-fold>
+//        ventas.create(venta);
+        this.fachada.guardarVenta(venta);
+        for (int i = 0; i < this.listaServicios.size(); i++) {
+            Servicio servicio = this.listaServicios.get(i);
+            Relventaservicio relVentaServicio = new Relventaservicio(servicio, venta);
+//            ventasservicio.create(relVentaServicio);
+            this.fachada.guardarRelventaservicio(relVentaServicio);
+        }
 
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                DlgTotalServicio dialog = new DlgTotalServicio(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
+        this.dispose();
+
+    }
+
+    private void llenarTablaServicios() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConceptos.getModel();
+        modeloTabla.setRowCount(0);
+        for (Servicio servicio : this.listaServicios) {
+            Object[] fila = new Object[2];
+            fila[0] = servicio.getConcepto();
+            fila[1] = servicio.getCosto();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaProductosBuscados();
+    }
+
+    private void centrarDatosTablaProductosBuscados() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaConceptos.getColumnCount(); i++) {
+            this.tablaConceptos.setDefaultRenderer(this.tablaConceptos.getColumnClass(i), columna);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnPagar;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField cambioTF;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField pagoTF;
     private javax.swing.JTable tablaConceptos;
+    private javax.swing.JTextField totalTF;
     // End of variables declaration//GEN-END:variables
 }
