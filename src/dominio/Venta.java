@@ -7,9 +7,7 @@ package dominio;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,12 +17,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -56,13 +52,12 @@ public class Venta implements Serializable {
     private double total;
     @Column(name = "notas")
     private String notas;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idventa")
-    private List<Relventaservicio> relventaservicioList;
     @JoinColumn(name = "idcliente", referencedColumnName = "idcliente")
     @ManyToOne(optional = false)
     private Cliente idcliente;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idventa")
-    private List<Relventapieza> relventapiezaList;
+    @JoinColumn(name = "idvehiculo", referencedColumnName = "idvehiculo")
+    @ManyToOne(optional = false)
+    private Vehiculo idvehiculo;
 
     public Venta() {
     }
@@ -77,7 +72,15 @@ public class Venta implements Serializable {
         this.notas = notas;
         this.idcliente = idcliente;
     }
-
+    
+    public Venta(Date fecha, double total, String notas, Cliente idcliente, Vehiculo idvehiculo) {
+        this.fecha = fecha;
+        this.total = total;
+        this.notas = notas;
+        this.idcliente = idcliente;
+        this.idvehiculo = idvehiculo;
+    }
+    
     public Venta(Integer idventa, Date fecha, double total) {
         this.idventa = idventa;
         this.fecha = fecha;
@@ -116,15 +119,6 @@ public class Venta implements Serializable {
         this.notas = notas;
     }
 
-    @XmlTransient
-    public List<Relventaservicio> getRelventaservicioList() {
-        return relventaservicioList;
-    }
-
-    public void setRelventaservicioList(List<Relventaservicio> relventaservicioList) {
-        this.relventaservicioList = relventaservicioList;
-    }
-
     public Cliente getIdcliente() {
         return idcliente;
     }
@@ -133,13 +127,12 @@ public class Venta implements Serializable {
         this.idcliente = idcliente;
     }
 
-    @XmlTransient
-    public List<Relventapieza> getRelventapiezaList() {
-        return relventapiezaList;
+    public Vehiculo getIdvehiculo() {
+        return idvehiculo;
     }
 
-    public void setRelventapiezaList(List<Relventapieza> relventapiezaList) {
-        this.relventapiezaList = relventapiezaList;
+    public void setIdvehiculo(Vehiculo idvehiculo) {
+        this.idvehiculo = idvehiculo;
     }
 
     @Override

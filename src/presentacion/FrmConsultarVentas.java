@@ -1,9 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package presentacion;
+
+import controles.Fachada;
+import controles.IFachada;
+import dominio.Servicio;
+import dominio.Venta;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -11,12 +17,15 @@ package presentacion;
  */
 public class FrmConsultarVentas extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrmConsultarVentas
-     */
+    private final IFachada fachada;
+    private final List<Venta> listaVentas;
+
     public FrmConsultarVentas() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.fachada = new Fachada();
+        this.listaVentas = this.fachada.buscarTodasVenta();
+        this.llenarTablaVentas(listaVentas);
     }
 
     /**
@@ -36,7 +45,7 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        btnGenerar = new javax.swing.JButton();
+        btnMostrarVenta = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tablaVentas = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
@@ -85,12 +94,12 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setText("Lista de ventas registradas");
 
-        btnGenerar.setBackground(new java.awt.Color(51, 204, 0));
-        btnGenerar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnGenerar.setText("Mostrar detalles de venta");
-        btnGenerar.addActionListener(new java.awt.event.ActionListener() {
+        btnMostrarVenta.setBackground(new java.awt.Color(51, 204, 0));
+        btnMostrarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnMostrarVenta.setText("Mostrar detalles de venta");
+        btnMostrarVenta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGenerarActionPerformed(evt);
+                btnMostrarVentaActionPerformed(evt);
             }
         });
 
@@ -133,11 +142,8 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSeparator1)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)))
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -151,8 +157,9 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addGap(218, 218, 218))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(btnGenerar)
+                        .addComponent(btnMostrarVenta)
                         .addGap(235, 235, 235))))
+            .addComponent(jSeparator1)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,7 +173,7 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 348, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addComponent(btnGenerar)
+                .addComponent(btnMostrarVenta)
                 .addGap(27, 27, 27))
         );
 
@@ -241,10 +248,9 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
         this.salirAdministrarVentas();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
-        DlgDetalleVenta dlgDetalleVenta = new DlgDetalleVenta(this, rootPaneCheckingEnabled);
-        dlgDetalleVenta.setVisible(true);
-    }//GEN-LAST:event_btnGenerarActionPerformed
+    private void btnMostrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarVentaActionPerformed
+        this.consultarVenta();
+    }//GEN-LAST:event_btnMostrarVentaActionPerformed
 
     private void btnRegistrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarVentaActionPerformed
         this.mostrarFrmRegistrarVenta();
@@ -257,6 +263,42 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
     private void btnEditarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarVentaActionPerformed
         this.mostrarFrmEditarVenta();
     }//GEN-LAST:event_btnEditarVentaActionPerformed
+
+    private void consultarVenta() {
+        int indiceFilaSeleccionada = this.tablaVentas.getSelectedRow();
+        if (indiceFilaSeleccionada == -1) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una venta",
+                    "Advertencia", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Integer idVenta = (Integer) this.tablaVentas.getValueAt(indiceFilaSeleccionada, 0);
+            Venta venta = this.fachada.buscarPorIDVenta(idVenta);
+            DlgDetalleVenta dlgDetalleVenta = new DlgDetalleVenta(this, rootPaneCheckingEnabled, venta);
+            dlgDetalleVenta.setVisible(true);
+        }
+    }
+
+    private void llenarTablaVentas(List<Venta> listaVentas) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaVentas.getModel();
+        modeloTabla.setRowCount(0);
+        for (Venta venta : listaVentas) {
+            Object[] fila = new Object[5];
+            fila[0] = venta.getIdventa();
+            fila[1] = venta.getIdcliente().getNombre();
+            fila[2] = venta.getIdvehiculo().getNombre();
+            fila[3] = new SimpleDateFormat("dd-MM-yyyy").format(venta.getFecha());
+            fila[4] = venta.getTotal();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaProductosBuscados();
+    }
+
+    private void centrarDatosTablaProductosBuscados() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaVentas.getColumnCount(); i++) {
+            this.tablaVentas.setDefaultRenderer(this.tablaVentas.getColumnClass(i), columna);
+        }
+    }
 
     private void mostrarFrmEliminarVenta() {
         FrmEliminarVenta frmEliminarVenta = new FrmEliminarVenta();
@@ -287,7 +329,7 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
     private javax.swing.JButton btnConsultarVenta;
     private javax.swing.JButton btnEditarVenta;
     private javax.swing.JButton btnEliminarVenta;
-    private javax.swing.JButton btnGenerar;
+    private javax.swing.JButton btnMostrarVenta;
     private javax.swing.JButton btnRegistrarVenta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

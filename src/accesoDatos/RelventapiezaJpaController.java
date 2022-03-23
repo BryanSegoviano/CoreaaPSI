@@ -13,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import dominio.Pieza;
 import dominio.Relventapieza;
-import dominio.Venta;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -43,19 +42,10 @@ public class RelventapiezaJpaController implements Serializable {
                 idpieza = em.getReference(idpieza.getClass(), idpieza.getIdpieza());
                 relventapieza.setIdpieza(idpieza);
             }
-            Venta idventa = relventapieza.getIdventa();
-            if (idventa != null) {
-                idventa = em.getReference(idventa.getClass(), idventa.getIdventa());
-                relventapieza.setIdventa(idventa);
-            }
             em.persist(relventapieza);
             if (idpieza != null) {
                 idpieza.getRelventapiezaList().add(relventapieza);
                 idpieza = em.merge(idpieza);
-            }
-            if (idventa != null) {
-                idventa.getRelventapiezaList().add(relventapieza);
-                idventa = em.merge(idventa);
             }
             em.getTransaction().commit();
         } finally {
@@ -73,15 +63,9 @@ public class RelventapiezaJpaController implements Serializable {
             Relventapieza persistentRelventapieza = em.find(Relventapieza.class, relventapieza.getIdrelventapieza());
             Pieza idpiezaOld = persistentRelventapieza.getIdpieza();
             Pieza idpiezaNew = relventapieza.getIdpieza();
-            Venta idventaOld = persistentRelventapieza.getIdventa();
-            Venta idventaNew = relventapieza.getIdventa();
             if (idpiezaNew != null) {
                 idpiezaNew = em.getReference(idpiezaNew.getClass(), idpiezaNew.getIdpieza());
                 relventapieza.setIdpieza(idpiezaNew);
-            }
-            if (idventaNew != null) {
-                idventaNew = em.getReference(idventaNew.getClass(), idventaNew.getIdventa());
-                relventapieza.setIdventa(idventaNew);
             }
             relventapieza = em.merge(relventapieza);
             if (idpiezaOld != null && !idpiezaOld.equals(idpiezaNew)) {
@@ -91,14 +75,6 @@ public class RelventapiezaJpaController implements Serializable {
             if (idpiezaNew != null && !idpiezaNew.equals(idpiezaOld)) {
                 idpiezaNew.getRelventapiezaList().add(relventapieza);
                 idpiezaNew = em.merge(idpiezaNew);
-            }
-            if (idventaOld != null && !idventaOld.equals(idventaNew)) {
-                idventaOld.getRelventapiezaList().remove(relventapieza);
-                idventaOld = em.merge(idventaOld);
-            }
-            if (idventaNew != null && !idventaNew.equals(idventaOld)) {
-                idventaNew.getRelventapiezaList().add(relventapieza);
-                idventaNew = em.merge(idventaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -133,11 +109,6 @@ public class RelventapiezaJpaController implements Serializable {
             if (idpieza != null) {
                 idpieza.getRelventapiezaList().remove(relventapieza);
                 idpieza = em.merge(idpieza);
-            }
-            Venta idventa = relventapieza.getIdventa();
-            if (idventa != null) {
-                idventa.getRelventapiezaList().remove(relventapieza);
-                idventa = em.merge(idventa);
             }
             em.remove(relventapieza);
             em.getTransaction().commit();

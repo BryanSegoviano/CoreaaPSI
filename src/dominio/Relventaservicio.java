@@ -102,7 +102,7 @@ public class Relventaservicio implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Relventaservicio[ idrelVentaServicio=" + idrelVentaServicio + " ]";
+        return "Relventaservicio{" + "idrelVentaServicio=" + idrelVentaServicio + ", idservicio=" + idservicio + ", idventa=" + idventa + '}';
     }
     
 }

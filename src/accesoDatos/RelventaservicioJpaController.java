@@ -13,7 +13,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import dominio.Servicio;
-import dominio.Venta;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -43,19 +42,10 @@ public class RelventaservicioJpaController implements Serializable {
                 idservicio = em.getReference(idservicio.getClass(), idservicio.getIdservicio());
                 relventaservicio.setIdservicio(idservicio);
             }
-            Venta idventa = relventaservicio.getIdventa();
-            if (idventa != null) {
-                idventa = em.getReference(idventa.getClass(), idventa.getIdventa());
-                relventaservicio.setIdventa(idventa);
-            }
             em.persist(relventaservicio);
             if (idservicio != null) {
                 idservicio.getRelventaservicioList().add(relventaservicio);
                 idservicio = em.merge(idservicio);
-            }
-            if (idventa != null) {
-                idventa.getRelventaservicioList().add(relventaservicio);
-                idventa = em.merge(idventa);
             }
             em.getTransaction().commit();
         } finally {
@@ -73,15 +63,9 @@ public class RelventaservicioJpaController implements Serializable {
             Relventaservicio persistentRelventaservicio = em.find(Relventaservicio.class, relventaservicio.getIdrelVentaServicio());
             Servicio idservicioOld = persistentRelventaservicio.getIdservicio();
             Servicio idservicioNew = relventaservicio.getIdservicio();
-            Venta idventaOld = persistentRelventaservicio.getIdventa();
-            Venta idventaNew = relventaservicio.getIdventa();
             if (idservicioNew != null) {
                 idservicioNew = em.getReference(idservicioNew.getClass(), idservicioNew.getIdservicio());
                 relventaservicio.setIdservicio(idservicioNew);
-            }
-            if (idventaNew != null) {
-                idventaNew = em.getReference(idventaNew.getClass(), idventaNew.getIdventa());
-                relventaservicio.setIdventa(idventaNew);
             }
             relventaservicio = em.merge(relventaservicio);
             if (idservicioOld != null && !idservicioOld.equals(idservicioNew)) {
@@ -91,14 +75,6 @@ public class RelventaservicioJpaController implements Serializable {
             if (idservicioNew != null && !idservicioNew.equals(idservicioOld)) {
                 idservicioNew.getRelventaservicioList().add(relventaservicio);
                 idservicioNew = em.merge(idservicioNew);
-            }
-            if (idventaOld != null && !idventaOld.equals(idventaNew)) {
-                idventaOld.getRelventaservicioList().remove(relventaservicio);
-                idventaOld = em.merge(idventaOld);
-            }
-            if (idventaNew != null && !idventaNew.equals(idventaOld)) {
-                idventaNew.getRelventaservicioList().add(relventaservicio);
-                idventaNew = em.merge(idventaNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -133,11 +109,6 @@ public class RelventaservicioJpaController implements Serializable {
             if (idservicio != null) {
                 idservicio.getRelventaservicioList().remove(relventaservicio);
                 idservicio = em.merge(idservicio);
-            }
-            Venta idventa = relventaservicio.getIdventa();
-            if (idventa != null) {
-                idventa.getRelventaservicioList().remove(relventaservicio);
-                idventa = em.merge(idventa);
             }
             em.remove(relventaservicio);
             em.getTransaction().commit();

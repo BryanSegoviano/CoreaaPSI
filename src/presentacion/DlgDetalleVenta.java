@@ -5,19 +5,33 @@
  */
 package presentacion;
 
+import controles.Fachada;
+import controles.IFachada;
+import dominio.Relventaservicio;
+import dominio.Servicio;
+import dominio.Venta;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author bryan
  */
 public class DlgDetalleVenta extends javax.swing.JDialog {
 
-    /**
-     * Creates new form DlgDetalleVenta
-     */
-    public DlgDetalleVenta(java.awt.Frame parent, boolean modal) {
+    private Venta venta;
+    private final IFachada fachada;
+    
+    public DlgDetalleVenta(java.awt.Frame parent, boolean modal, Venta venta) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
+        this.venta = venta;
+        this.fachada = new Fachada();
+        this.llenarDatosVenta(venta);
     }
 
     /**
@@ -317,6 +331,53 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnGenerarActionPerformed
+
+    private void llenarDatosVenta(Venta venta) {
+        this.fechaVentalbl.setText(new SimpleDateFormat("dd-MM-yyyy").format(venta.getFecha()));
+        this.clienteNom.setText(venta.getIdcliente().getNombre());
+        this.clienteTel.setText(venta.getIdcliente().getTelefono());
+        this.clienteDireccion.setText(venta.getIdcliente().getDireccion());
+
+        this.marcaTF.setText(venta.getIdvehiculo().getMarca());
+        this.nombreTF.setText(venta.getIdvehiculo().getNombre());
+        this.modeloTF.setText(venta.getIdvehiculo().getModelo());
+
+        this.notasTF.setText(venta.getNotas());
+
+        List<Relventaservicio> relVentaServicio = this.fachada.buscarTodasRelventaservicio();
+        List<Relventaservicio> listaVentaServicios = new ArrayList<Relventaservicio>();
+        ArrayList<Servicio> listaServicios = new ArrayList<Servicio>();
+        for (int i = 0; i < relVentaServicio.size(); i++) {
+            if (relVentaServicio.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
+                listaVentaServicios.add(relVentaServicio.get(i));
+            }
+        }
+        for (Relventaservicio listaVentaServicio : listaVentaServicios) {
+            listaServicios.add(listaVentaServicio.getIdservicio());
+        }
+        this.llenarTablaServicios(listaServicios);
+        this.totalVentaTF.setText(venta.getTotal() + "");
+    }
+
+    private void llenarTablaServicios(ArrayList<Servicio> listaServicios) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConceptos.getModel();
+        modeloTabla.setRowCount(0);
+        for (Servicio servicio : listaServicios) {
+            Object[] fila = new Object[2];
+            fila[0] = servicio.getConcepto();
+            fila[1] = servicio.getCosto();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaProductosBuscados();
+    }
+
+    private void centrarDatosTablaProductosBuscados() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaConceptos.getColumnCount(); i++) {
+            this.tablaConceptos.setDefaultRenderer(this.tablaConceptos.getColumnClass(i), columna);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnGenerar;

@@ -5,18 +5,30 @@
  */
 package presentacion;
 
+import controles.Fachada;
+import controles.IFachada;
+import dominio.Relventaservicio;
+import dominio.Servicio;
+import dominio.Venta;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author bryan
  */
 public class FrmEliminarVenta extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrmEliminarVenta
-     */
+    private final IFachada fachada;
+
     public FrmEliminarVenta() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.fachada = new Fachada();
     }
 
     /**
@@ -173,7 +185,6 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
         jLabel15.setText("Fecha de la venta:");
 
         fechaVentalbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        fechaVentalbl.setText("fecha");
 
         btnBuscarVenta.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -435,7 +446,19 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
-
+        if (this.idVentaTF.getText().equals("") || this.nombreTF.getText().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar y buscar el ID de una venta.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            int idVenta = Integer.parseInt(this.idVentaTF.getText());
+            int operacion = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminarlo?", "Eliminar producto", JOptionPane.YES_NO_OPTION);
+            if (operacion == JOptionPane.YES_OPTION) {
+                this.eliminarVenta(idVenta);
+                this.LimpiarDatosFormulario();
+            }
+        }
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -443,7 +466,15 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnBuscarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVentaActionPerformed
-        // TODO add your handling code here:
+        if (this.idVentaTF.getText().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar un ID a buscar.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            int idVenta = Integer.parseInt(this.idVentaTF.getText());
+            this.buscarVenta(idVenta);
+        }
     }//GEN-LAST:event_btnBuscarVentaActionPerformed
 
     private void btnRegistrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarVentaActionPerformed
@@ -457,6 +488,104 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
     private void btnConsultarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarVentaActionPerformed
         this.mostrarFrmConsultarVentas();
     }//GEN-LAST:event_btnConsultarVentaActionPerformed
+
+    private void LimpiarDatosFormulario() {
+        this.idVentaTF.setText("");
+        this.clienteNom.setText("");
+        this.clienteTel.setText("");
+        this.clienteDireccion.setText("");
+
+        this.marcaTF.setText("");
+        this.nombreTF.setText("");
+        this.modeloTF.setText("");
+
+        this.notasTF.setText("");
+        this.totalVentaTF.setText("");
+        ArrayList<Servicio> listaServicios = new ArrayList<>();
+        this.llenarTablaServicios(listaServicios);
+    }
+
+    private void eliminarVenta(int idVenta) {
+        Venta venta = this.fachada.buscarPorIDVenta(idVenta);
+        List<Servicio> listaServicios = new ArrayList<Servicio>();
+
+        //Eliminar relaciones de relventaservicio
+        List<Relventaservicio> ListaRelVentaServicio = this.fachada.buscarTodasRelventaservicio();
+        for (int i = 0; i < ListaRelVentaServicio.size(); i++) {
+            if (ListaRelVentaServicio.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
+                listaServicios.add(this.fachada.buscarPorIDServicio(ListaRelVentaServicio.get(i).getIdservicio().getIdservicio()));
+                this.fachada.eliminarRelventaservicio(ListaRelVentaServicio.get(i).getIdrelVentaServicio());
+            }
+        }
+
+        //Eliminar venta
+        this.fachada.eliminarVenta(idVenta);
+
+        //Eliminar servicios       
+        for (int i = 0; i < listaServicios.size(); i++) {
+            this.fachada.eliminarServicio(listaServicios.get(i).getIdservicio());
+        }
+    }
+
+    private void buscarVenta(int idVenta) {
+        Venta venta = this.fachada.buscarPorIDVenta(idVenta);
+        if (venta != null) {
+            this.llenarDatosVenta(venta);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Venta no encontrada.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    private void llenarDatosVenta(Venta venta) {
+        this.fechaVentalbl.setText(new SimpleDateFormat("dd-MM-yyyy").format(venta.getFecha()));
+        this.clienteNom.setText(venta.getIdcliente().getNombre());
+        this.clienteTel.setText(venta.getIdcliente().getTelefono());
+        this.clienteDireccion.setText(venta.getIdcliente().getDireccion());
+
+        this.marcaTF.setText(venta.getIdvehiculo().getMarca());
+        this.nombreTF.setText(venta.getIdvehiculo().getNombre());
+        this.modeloTF.setText(venta.getIdvehiculo().getModelo());
+
+        this.notasTF.setText(venta.getNotas());
+
+        List<Relventaservicio> relVentaServicio = this.fachada.buscarTodasRelventaservicio();
+        List<Relventaservicio> listaVentaServicios = new ArrayList<Relventaservicio>();
+        ArrayList<Servicio> listaServicios = new ArrayList<Servicio>();
+        for (int i = 0; i < relVentaServicio.size(); i++) {
+            if (relVentaServicio.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
+                listaVentaServicios.add(relVentaServicio.get(i));
+            }
+        }
+        for (Relventaservicio listaVentaServicio : listaVentaServicios) {
+            listaServicios.add(listaVentaServicio.getIdservicio());
+        }
+        this.llenarTablaServicios(listaServicios);
+        this.totalVentaTF.setText(venta.getTotal() + "");
+    }
+
+    private void llenarTablaServicios(ArrayList<Servicio> listaServicios) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConceptos.getModel();
+        modeloTabla.setRowCount(0);
+        for (Servicio servicio : listaServicios) {
+            Object[] fila = new Object[2];
+            fila[0] = servicio.getConcepto();
+            fila[1] = servicio.getCosto();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaProductosBuscados();
+    }
+
+    private void centrarDatosTablaProductosBuscados() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaConceptos.getColumnCount(); i++) {
+            this.tablaConceptos.setDefaultRenderer(this.tablaConceptos.getColumnClass(i), columna);
+        }
+    }
 
     private void mostrarFrmEditarVenta() {
         FrmEditarVenta frmEditarVenta = new FrmEditarVenta();

@@ -160,7 +160,7 @@ public class Servicio implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Servicio[ idservicio=" + idservicio + " ]";
+        return "Servicio{" + "idservicio=" + idservicio + ", fecha=" + fecha + ", costo=" + costo + ", concepto=" + concepto + ", proximoServicio=" + proximoServicio + '}';
     }
     
 }
