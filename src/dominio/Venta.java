@@ -34,7 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Venta.findByIdventa", query = "SELECT v FROM Venta v WHERE v.idventa = :idventa"),
     @NamedQuery(name = "Venta.findByFecha", query = "SELECT v FROM Venta v WHERE v.fecha = :fecha"),
     @NamedQuery(name = "Venta.findByTotal", query = "SELECT v FROM Venta v WHERE v.total = :total"),
-    @NamedQuery(name = "Venta.findByNotas", query = "SELECT v FROM Venta v WHERE v.notas = :notas")})
+    @NamedQuery(name = "Venta.findByNotas", query = "SELECT v FROM Venta v WHERE v.notas = :notas"),
+    @NamedQuery(name = "Venta.findByVendedor", query = "SELECT v FROM Venta v WHERE v.vendedor = :vendedor")})
 public class Venta implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,6 +53,9 @@ public class Venta implements Serializable {
     private double total;
     @Column(name = "notas")
     private String notas;
+    @Basic(optional = false)
+    @Column(name = "vendedor")
+    private String vendedor;
     @JoinColumn(name = "idcliente", referencedColumnName = "idcliente")
     @ManyToOne(optional = false)
     private Cliente idcliente;
@@ -66,13 +70,12 @@ public class Venta implements Serializable {
         this.idventa = idventa;
     }
 
-    public Venta(Date fecha, double total, String notas, Cliente idcliente) {
+    public Venta(Date fecha, double total, String notas) {
         this.fecha = fecha;
         this.total = total;
         this.notas = notas;
-        this.idcliente = idcliente;
     }
-    
+
     public Venta(Date fecha, double total, String notas, Cliente idcliente, Vehiculo idvehiculo) {
         this.fecha = fecha;
         this.total = total;
@@ -81,10 +84,20 @@ public class Venta implements Serializable {
         this.idvehiculo = idvehiculo;
     }
     
-    public Venta(Integer idventa, Date fecha, double total) {
+    public Venta(Date fecha, double total, String notas, String vendedor, Cliente idcliente, Vehiculo idvehiculo) {
+        this.fecha = fecha;
+        this.total = total;
+        this.notas = notas;
+        this.vendedor = vendedor;
+        this.idcliente = idcliente;
+        this.idvehiculo = idvehiculo;
+    }
+    
+    public Venta(Integer idventa, Date fecha, double total, String vendedor) {
         this.idventa = idventa;
         this.fecha = fecha;
         this.total = total;
+        this.vendedor = vendedor;
     }
 
     public Integer getIdventa() {
@@ -117,6 +130,14 @@ public class Venta implements Serializable {
 
     public void setNotas(String notas) {
         this.notas = notas;
+    }
+
+    public String getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(String vendedor) {
+        this.vendedor = vendedor;
     }
 
     public Cliente getIdcliente() {
@@ -157,7 +178,7 @@ public class Venta implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Venta[ idventa=" + idventa + " ]";
+        return "Venta{" + "idventa=" + idventa + ", fecha=" + fecha + ", total=" + total + ", notas=" + notas + ", vendedor=" + vendedor + ", idcliente=" + idcliente + ", idvehiculo=" + idvehiculo + '}';
     }
     
 }

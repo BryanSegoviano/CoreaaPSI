@@ -4,8 +4,14 @@
  */
 package presentacion;
 
+import controles.ControlReglasNegocio;
+import controles.Fachada;
+import dominio.Pieza;
 import dominio.Servicio;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -13,12 +19,20 @@ import java.util.Date;
  */
 public class DlgDetalleServicio extends javax.swing.JDialog {
 
-    Servicio servicio;
-    
+    private Servicio servicio;
+    private Pieza pieza;
+    private final Fachada fachada;
+    private ControlReglasNegocio controlReglasNegocio;
+    private List<Pieza> listaPiezas;
+
     public DlgDetalleServicio(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
+        this.fachada = new Fachada();
+        this.controlReglasNegocio = new ControlReglasNegocio();
+        this.listaPiezas = new ArrayList<>();
+        this.llenarComboboxPiezas();
     }
 
     /**
@@ -33,16 +47,20 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         ConceptoTF = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        piezaCombox = new javax.swing.JComboBox<>();
+        cbPieza = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         cantidadTF = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         costoTF = new javax.swing.JTextField();
         btnAgregar = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
+        existenciaTF = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        checkboxPieza = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Detalles del servicio");
+        setResizable(false);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("Concepto:");
@@ -50,8 +68,12 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("Pieza:");
 
-        piezaCombox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        piezaCombox.setEnabled(false);
+        cbPieza.setEnabled(false);
+        cbPieza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbPiezaActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Cantidad:");
@@ -81,54 +103,78 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
             }
         });
 
+        existenciaTF.setEnabled(false);
+
+        jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel6.setText("Existencia:");
+
+        checkboxPieza.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        checkboxPieza.setText("¿Es una pieza?");
+        checkboxPieza.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkboxPiezaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(175, 175, 175)
-                .addComponent(btnAgregar)
-                .addGap(69, 69, 69)
-                .addComponent(btnCancelar)
-                .addContainerGap(30, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ConceptoTF))
-                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addComponent(jLabel4)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(jLabel5)
-                                    .addGap(34, 34, 34)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(41, 41, 41)))
+                                .addComponent(jLabel5)
+                                .addGap(34, 34, 34)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(piezaCombox, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(costoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cantidadTF, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ConceptoTF)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addGap(69, 69, 69)
+                                .addComponent(btnCancelar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(checkboxPieza)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addGap(41, 41, 41)
+                                .addComponent(cbPieza, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(existenciaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(31, 31, 31))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(13, 13, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(ConceptoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(7, 7, 7)
+                .addComponent(checkboxPieza)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(piezaCombox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(cbPieza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(existenciaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(cantidadTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -140,44 +186,138 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
                     .addComponent(btnCancelar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        if (this.validarCampos()) {
+            this.agregar();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar el concepto y su costo.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void agregar() {
         String concepto = this.ConceptoTF.getText();
         String costo = this.costoTF.getText();
         Double costoConvertido = Double.parseDouble(costo);
-        this.setServicio(new Servicio(new Date(), costoConvertido, concepto));
+        if (this.esPieza()) {
+            int cantidad = Integer.parseInt(this.cantidadTF.getText());
+            Pieza piezaNueva = (Pieza) this.cbPieza.getSelectedItem();
+            piezaNueva.setCantidad(cantidad);
+            piezaNueva.setCosto(costoConvertido);
+            this.setPieza(this.pieza);
+//            pieza.setCantidad(pieza.getCantidad() - cantidad);
+//            this.fachada.actualizarPieza(pieza);
+        } else {
+            this.setServicio(new Servicio(new Date(), costoConvertido, concepto));
+        }
         this.ConceptoTF.setText("");
         this.costoTF.setText("");
         this.dispose();
-    }//GEN-LAST:event_btnAgregarActionPerformed
+
+    }
+
+    private boolean validarCampos() {
+        String concepto = this.ConceptoTF.getText();
+        String costo = this.costoTF.getText();
+        if (concepto.equalsIgnoreCase("") || costo.equalsIgnoreCase("")) {
+            return false;
+        }
+
+        if (this.isNumericDouble(costo) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isNumericDouble(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException error) {
+            return false;
+        }
+    }
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    public Servicio getServicio(){
+    private void cbPiezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbPiezaActionPerformed
+        this.cargarCantidadPieza();
+    }//GEN-LAST:event_cbPiezaActionPerformed
+
+    private void checkboxPiezaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkboxPiezaActionPerformed
+        this.esPieza();
+    }//GEN-LAST:event_checkboxPiezaActionPerformed
+
+    public boolean esPieza() {
+        boolean esPieza = checkboxPieza.isSelected();
+        if (esPieza) {
+            this.cbPieza.setEnabled(true);
+            this.cantidadTF.setEnabled(true);
+            this.costoTF.setEnabled(true);
+            return true;
+        } else {
+            this.cbPieza.setEnabled(false);
+            this.cantidadTF.setEnabled(false);
+            this.costoTF.setEnabled(true);
+            return false;
+        }
+    }
+
+    public Servicio getServicio() {
         return this.servicio;
     }
-    
-    private void setServicio(Servicio servicio){
+
+    public void setServicio(Servicio servicio) {
         this.servicio = servicio;
     }
-    
+
+    public Pieza getPieza() {
+        return this.pieza;
+    }
+
+    public void setPieza(Pieza pieza) {
+        this.pieza = pieza;
+    }
+
+    private void llenarComboboxPiezas() {
+        this.listaPiezas = fachada.buscarTodasPieza();
+        for (Pieza pieza : listaPiezas) {
+            if (controlReglasNegocio.validaExistenciaPiezas(pieza.getIdpieza())) {
+                this.cbPieza.addItem(pieza);
+            }
+        }
+    }
+
+    private void cargarCantidadPieza() {
+        int cantidadPieza = listaPiezas.get(this.cbPieza.getSelectedIndex()).getCantidad();
+        String cantidadString = String.valueOf(cantidadPieza);
+        this.existenciaTF.setText(cantidadString);
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField ConceptoTF;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JTextField cantidadTF;
+    private javax.swing.JComboBox<Pieza> cbPieza;
+    private javax.swing.JCheckBox checkboxPieza;
     private javax.swing.JTextField costoTF;
+    private javax.swing.JTextField existenciaTF;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JComboBox<String> piezaCombox;
+    private javax.swing.JLabel jLabel6;
     // End of variables declaration//GEN-END:variables
 }

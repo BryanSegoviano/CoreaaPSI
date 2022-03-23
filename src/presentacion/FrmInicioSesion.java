@@ -5,18 +5,22 @@
  */
 package presentacion;
 
+import controles.ControlReglasNegocio;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author bryan
  */
 public class FrmInicioSesion extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrmInicioSesion
-     */
+    private ControlReglasNegocio controlReglasNegocio;
+    public static String vendedor;
+
     public FrmInicioSesion() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.controlReglasNegocio = new ControlReglasNegocio();
     }
 
     /**
@@ -32,8 +36,8 @@ public class FrmInicioSesion extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         btnIniciarSesion = new javax.swing.JButton();
         usuarioTF = new javax.swing.JTextField();
-        contraseniaTF = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
+        contraseniaTF = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Inicio de sesión");
@@ -54,8 +58,6 @@ public class FrmInicioSesion extends javax.swing.JFrame {
         });
 
         usuarioTF.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-
-        contraseniaTF.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("COREAA");
@@ -92,11 +94,11 @@ public class FrmInicioSesion extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(usuarioTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(24, 24, 24)
+                .addGap(27, 27, 27)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(contraseniaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(44, 44, 44)
+                .addGap(45, 45, 45)
                 .addComponent(btnIniciarSesion)
                 .addContainerGap(54, Short.MAX_VALUE))
         );
@@ -105,7 +107,14 @@ public class FrmInicioSesion extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnIniciarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarSesionActionPerformed
-        this.mostrarFrmRegistrarVenta();
+        boolean permiso = controlReglasNegocio.validarCredenciales(this.usuarioTF.getText(), this.contraseniaTF.getText());
+        if (permiso) {
+            this.vendedor = this.usuarioTF.getText();
+            this.mostrarFrmRegistrarVenta();
+        } else {
+            JOptionPane.showMessageDialog(this, "Usuario o Contraseña incorrectos",
+                    "Advertencia", JOptionPane.WARNING_MESSAGE);
+        }
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
     private void mostrarFrmRegistrarVenta() {
@@ -113,7 +122,7 @@ public class FrmInicioSesion extends javax.swing.JFrame {
         frmRegistrarVenta.setVisible(true);
         this.dispose();
     }
-    
+
     /**
      * @param args the command line arguments
      */
@@ -151,7 +160,7 @@ public class FrmInicioSesion extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnIniciarSesion;
-    private javax.swing.JTextField contraseniaTF;
+    private javax.swing.JPasswordField contraseniaTF;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

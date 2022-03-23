@@ -22,6 +22,7 @@ import dominio.Venta;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.persistence.Persistence;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -32,16 +33,16 @@ import javax.swing.table.DefaultTableModel;
 public class DlgTotalServicio extends javax.swing.JDialog {
 
     private Venta venta;
-    private Vehiculo vehiculo;
     private ArrayList<Servicio> listaServicios;
     private IFachada fachada;
+    private boolean clienteYaRegistrado;
 
-    public DlgTotalServicio(java.awt.Frame parent, boolean modal, Venta venta, ArrayList<Servicio> listaServicios, Vehiculo vehiculo) {
+    public DlgTotalServicio(java.awt.Frame parent, boolean modal, Venta venta, ArrayList<Servicio> listaServicios, boolean clienteYaRegistrado) {
         super(parent, modal);
         initComponents();
         this.setLocationRelativeTo(null);
+        this.clienteYaRegistrado = clienteYaRegistrado;
         this.venta = venta;
-        this.vehiculo = vehiculo;
         this.listaServicios = listaServicios;
         this.llenarTablaServicios();
         this.totalTF.setText(this.venta.getTotal() + "");
@@ -117,6 +118,12 @@ public class DlgTotalServicio extends javax.swing.JDialog {
         cambioTF.setEditable(false);
 
         totalTF.setEditable(false);
+
+        pagoTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                pagoTFKeyReleased(evt);
+            }
+        });
 
         btnPagar.setBackground(new java.awt.Color(0, 204, 0));
         btnPagar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -195,40 +202,44 @@ public class DlgTotalServicio extends javax.swing.JDialog {
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
-    private void agregarVenta() {
-//        ClienteJpaController clientes = new ClienteJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
-//        VehiculoJpaController vehiculos = new VehiculoJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
-//        RelclientevehiculoJpaController clientevehiculos = new RelclientevehiculoJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
-//        VentaJpaController ventas = new VentaJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
-//        RelventaservicioJpaController ventasservicio = new RelventaservicioJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
-//        ServicioJpaController servicios = new ServicioJpaController(Persistence.createEntityManagerFactory("CoreaaPU"));
 
-        Venta ventaFinal = this.venta;
-        Cliente cliente = ventaFinal.getIdcliente();
-//        clientes.create(cliente);
-        this.fachada.guardarCliente(cliente);
-        Vehiculo vehiculoFinal = this.vehiculo;
-//        vehiculos.create(vehiculoFinal);
-        this.fachada.guardarVehiculo(vehiculo);
-        Relclientevehiculo clienteveh = new Relclientevehiculo(cliente, vehiculoFinal);
-//        clientevehiculos.create(clienteveh);
-        this.fachada.guardarRelclientevehiculo(clienteveh);
+    private void pagoTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pagoTFKeyReleased
+        String pago = pagoTF.getText();
+        boolean isNumeric = pago.chars().allMatch(Character::isDigit);
+        if (!isNumeric) {
+            JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+            this.pagoTF.setText("");
+        } else {
+            double pagoInt = Double.parseDouble(pago);
+            double totalInt = Double.parseDouble(this.totalTF.getText());
+            double cambio = pagoInt - totalInt;
+            String cambioStr = String.valueOf(cambio);
+            cambioTF.setText(cambioStr);
+        }
+    }//GEN-LAST:event_pagoTFKeyReleased
+    private void agregarVenta() {
+        Cliente clienteFinal = this.venta.getIdcliente();
+        Vehiculo vehiculoFinal = this.venta.getIdvehiculo();
+        Relclientevehiculo relclientevehiculo = new Relclientevehiculo(clienteFinal, vehiculoFinal);
+
+        if (clienteYaRegistrado == false) {
+            this.fachada.guardarCliente(clienteFinal);
+            this.fachada.guardarVehiculo(vehiculoFinal);
+            this.fachada.guardarRelclientevehiculo(relclientevehiculo);
+        }
 
         for (int i = 0; i < this.listaServicios.size(); i++) {
-//            servicios.create(this.listaServicios.get(i));
             this.fachada.guardarServicio(this.listaServicios.get(i));
         }
-//        ventas.create(venta);
+        
         this.fachada.guardarVenta(venta);
         for (int i = 0; i < this.listaServicios.size(); i++) {
             Servicio servicio = this.listaServicios.get(i);
             Relventaservicio relVentaServicio = new Relventaservicio(servicio, venta);
-//            ventasservicio.create(relVentaServicio);
             this.fachada.guardarRelventaservicio(relVentaServicio);
         }
-
         this.dispose();
-
     }
 
     private void llenarTablaServicios() {

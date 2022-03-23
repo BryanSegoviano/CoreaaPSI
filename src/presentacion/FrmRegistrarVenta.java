@@ -4,22 +4,18 @@
  */
 package presentacion;
 
-import accesoDatos.ClienteJpaController;
-import accesoDatos.RelclientevehiculoJpaController;
-import accesoDatos.RelventaservicioJpaController;
-import accesoDatos.ServicioJpaController;
-import accesoDatos.VehiculoJpaController;
-import accesoDatos.VentaJpaController;
+import controles.ControlReglasNegocio;
+import controles.Fachada;
 import dominio.Cliente;
-import dominio.Relclientevehiculo;
-import dominio.Relventaservicio;
+import dominio.Pieza;
 import dominio.Servicio;
 import dominio.Vehiculo;
 import dominio.Venta;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Persistence;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -30,14 +26,29 @@ import javax.swing.table.DefaultTableModel;
 public class FrmRegistrarVenta extends javax.swing.JFrame {
 
     private ArrayList<Servicio> listaServicios;
+    private ArrayList<Pieza> listaPieza;
+    private List<Vehiculo> listaVehiculosCliente;
     private DlgDetalleServicio dlgDetalleServicio;
     private DlgTotalServicio dlgTotalServicio;
+    private Fachada fachada;
+    private ControlReglasNegocio controlReglasNegocio;
+    private Cliente clienteRegistrado;
+    private Vehiculo vehiculoRegistrado;
+    private String vendedor;
+    private boolean clienteYaRegistrado;
 
     public FrmRegistrarVenta() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.listaServicios = new ArrayList<>();
         this.dlgDetalleServicio = new DlgDetalleServicio(this, rootPaneCheckingEnabled);
+        this.listaServicios = new ArrayList<>();
+        this.listaPieza = new ArrayList<>();
+        this.fachada = new Fachada();
+        this.controlReglasNegocio = new ControlReglasNegocio();
+        this.vendedor = FrmInicioSesion.vendedor;
+        this.clienteYaRegistrado = false;
+        this.cargarTabla();
+        this.listaVehiculosCliente = new ArrayList<>();
     }
 
     /**
@@ -85,16 +96,16 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         cbVehiculos = new javax.swing.JComboBox<>();
         marcaTF = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
-        totalVentaTF1 = new javax.swing.JTextField();
-        jLabel16 = new javax.swing.JLabel();
-        totalVentaTF2 = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
-        btnAgregarServicio1 = new javax.swing.JButton();
+        btnAgregarServicio = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList<>();
+        tablaClientes = new javax.swing.JTable();
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
+        btnEliminarServicio = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablaConceptos1 = new javax.swing.JTable();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -160,7 +171,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jCalendar1.setEnabled(false);
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel9.setText("Servicios de la venta");
+        jLabel9.setText("Servicios");
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel10.setText("Notas");
@@ -179,6 +190,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jLabel12.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel12.setText("Marca:");
 
+        totalVentaTF.setText("0.0");
         totalVentaTF.setEnabled(false);
         totalVentaTF.setMinimumSize(new java.awt.Dimension(64, 23));
 
@@ -206,6 +218,100 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
 
             },
             new String [] {
+                "Concepto", "Monto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaConceptos.getTableHeader().setReorderingAllowed(false);
+        jScrollPane2.setViewportView(tablaConceptos);
+        if (tablaConceptos.getColumnModel().getColumnCount() > 0) {
+            tablaConceptos.getColumnModel().getColumn(0).setResizable(false);
+            tablaConceptos.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        cbVehiculos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Vehiculo 1" }));
+        cbVehiculos.setEnabled(false);
+
+        marcaTF.setMinimumSize(new java.awt.Dimension(64, 23));
+
+        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel15.setText("Total:");
+
+        btnAgregarServicio.setBackground(new java.awt.Color(0, 0, 0));
+        btnAgregarServicio.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnAgregarServicio.setText("+");
+        btnAgregarServicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgregarServicioActionPerformed(evt);
+            }
+        });
+
+        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel11.setText("Clientes registrados");
+
+        tablaClientes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Cliente"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tablaClientes.getTableHeader().setReorderingAllowed(false);
+        jScrollPane4.setViewportView(tablaClientes);
+        if (tablaClientes.getColumnModel().getColumnCount() > 0) {
+            tablaClientes.getColumnModel().getColumn(0).setResizable(false);
+            tablaClientes.getColumnModel().getColumn(1).setResizable(false);
+        }
+
+        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
+        btnEliminarServicio.setBackground(new java.awt.Color(0, 0, 0));
+        btnEliminarServicio.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnEliminarServicio.setText("-");
+        btnEliminarServicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarServicioActionPerformed(evt);
+            }
+        });
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel16.setText("Piezas");
+
+        tablaConceptos1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
                 "Concepto", "Monto", "Cantidad"
             }
         ) {
@@ -224,53 +330,14 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tablaConceptos.getTableHeader().setReorderingAllowed(false);
-        jScrollPane2.setViewportView(tablaConceptos);
-        if (tablaConceptos.getColumnModel().getColumnCount() > 0) {
-            tablaConceptos.getColumnModel().getColumn(0).setResizable(false);
-            tablaConceptos.getColumnModel().getColumn(1).setResizable(false);
-            tablaConceptos.getColumnModel().getColumn(2).setResizable(false);
+        tablaConceptos1.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(tablaConceptos1);
+        if (tablaConceptos1.getColumnModel().getColumnCount() > 0) {
+            tablaConceptos1.getColumnModel().getColumn(0).setResizable(false);
+            tablaConceptos1.getColumnModel().getColumn(1).setResizable(false);
+            tablaConceptos1.getColumnModel().getColumn(2).setResizable(false);
+            tablaConceptos1.getColumnModel().getColumn(2).setHeaderValue("Cantidad");
         }
-
-        cbVehiculos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Vehiculo 1", "Vehiculo 2" }));
-        cbVehiculos.setEnabled(false);
-
-        marcaTF.setMinimumSize(new java.awt.Dimension(64, 23));
-
-        jLabel15.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel15.setText("Total:");
-
-        totalVentaTF1.setMinimumSize(new java.awt.Dimension(64, 23));
-
-        jLabel16.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel16.setText("¿Con cuanto va a pagar?");
-
-        totalVentaTF2.setEnabled(false);
-        totalVentaTF2.setMinimumSize(new java.awt.Dimension(64, 23));
-
-        jLabel17.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel17.setText("Cambio:");
-
-        btnAgregarServicio1.setBackground(new java.awt.Color(0, 0, 0));
-        btnAgregarServicio1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnAgregarServicio1.setText("+");
-        btnAgregarServicio1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgregarServicio1ActionPerformed(evt);
-            }
-        });
-
-        jLabel11.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel11.setText("Clientes registrados");
-
-        jList2.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Cliente 1", "Cliente 2", "Cliente 3" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane4.setViewportView(jList2);
-
-        jSeparator2.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -278,14 +345,18 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel11)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(btnClienteExistente)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(20, 20, 20)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel11)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(btnClienteExistente))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(18, 34, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -310,14 +381,10 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                         .addComponent(cbVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel13)
-                                    .addComponent(jLabel12))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel14)
-                                .addGap(31, 31, 31)))
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel12)
+                            .addComponent(jLabel14))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(nombreTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(marcaTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -325,7 +392,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(jLabel3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jCalendar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -343,41 +410,41 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addGap(201, 201, 201))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addGap(110, 110, 110)
-                        .addComponent(jLabel10)
-                        .addGap(112, 112, 112)))
-                .addGap(31, 31, 31))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel17)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalVentaTF2, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(69, 69, 69)
+                                .addComponent(jLabel9))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(104, 104, 104)
+                                .addComponent(jLabel16))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel16)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalVentaTF1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(134, 134, 134)
                         .addComponent(jLabel15)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnAgregarServicio1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnAgregarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addGap(52, 52, 52))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(77, 77, 77)
+                        .addGap(10, 10, 10)
                         .addComponent(btnGenerar)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(31, 31, 31))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -438,28 +505,27 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel16)
+                                    .addComponent(jLabel9)
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel15)
-                            .addComponent(btnAgregarServicio1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(totalVentaTF1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel16))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(totalVentaTF2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel17)
-                            .addComponent(btnGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(btnAgregarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(22, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel10)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(21, 21, 21)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
 
@@ -531,30 +597,48 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
-        this.agregarVenta();
+        if (this.validarDatos()) {
+            this.agregarVenta();
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar todos los datos del cliente, vehiculo, y por lo menos un servicio.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void agregarVenta() {
         String direccion = this.clienteDireccion.getText();
         String nombre = this.clienteNom.getText();
         String celular = this.clienteTel.getText();
-        Cliente cliente = new Cliente(direccion, nombre, celular);
+        Cliente clienteNuevo = new Cliente(direccion, nombre, celular);
 
         String marcaVehiculo = this.marcaTF.getText();
         String nombreVehiculo = this.nombreTF.getText();
         String modeloVehiculo = this.modeloTF.getText();
-        Vehiculo vehiculo = new Vehiculo(modeloVehiculo, nombreVehiculo, marcaVehiculo);
-
+        Vehiculo vehiculoNuevo = new Vehiculo(modeloVehiculo, nombreVehiculo, marcaVehiculo);
         String notas = this.notasTF.getText();
-
         Double totalVenta = this.obtenerTotalVenta();
-        Venta venta = new Venta(new Date(), totalVenta, notas, cliente, vehiculo);
-        this.dlgTotalServicio = new DlgTotalServicio(this, rootPaneCheckingEnabled, venta, this.listaServicios, vehiculo);
+        Venta venta = null;
+        if (clienteYaRegistrado == true) {
+            venta = new Venta(new Date(), totalVenta, notas, vendedor, this.clienteRegistrado, this.vehiculoRegistrado);
+        }
+        if (this.clienteYaRegistrado == false) {
+            venta = new Venta(new Date(), totalVenta, notas, vendedor, clienteNuevo, vehiculoNuevo);
+        }
+        this.dlgTotalServicio = new DlgTotalServicio(this, rootPaneCheckingEnabled, venta, this.listaServicios, clienteYaRegistrado);
         this.dlgTotalServicio.setVisible(true);
     }
 
     private void btnClienteExistenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteExistenteActionPerformed
-
+        int renglonElegido = this.tablaClientes.getSelectedRow();
+        if (renglonElegido == -1) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un cliente",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            this.llenaCamposCliente(renglonElegido);
+            this.quitarEditables();
+        }
     }//GEN-LAST:event_btnClienteExistenteActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -573,12 +657,93 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         this.mostrarFrmConsultarVentas();
     }//GEN-LAST:event_btnConsultarVentaActionPerformed
 
-    private void btnAgregarServicio1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicio1ActionPerformed
-        dlgDetalleServicio.setVisible(true);
+    private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
+        this.agregarServicio();
+    }//GEN-LAST:event_btnAgregarServicioActionPerformed
+
+    private void agregarServicio() {
+        this.dlgDetalleServicio.setVisible(true);
         Servicio servicio = this.dlgDetalleServicio.getServicio();
-        this.listaServicios.add(servicio);
-        this.llenarTablaServicios();
-    }//GEN-LAST:event_btnAgregarServicio1ActionPerformed
+        Pieza pieza = this.dlgDetalleServicio.getPieza();
+        if (servicio != null) {
+            this.listaServicios.add(servicio);
+            this.llenarTablaServicios();
+            this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+        }
+        if (pieza != null) {
+            this.listaPieza.add(pieza);
+            this.llenarTablaServicios();
+            this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+        }
+        this.dlgDetalleServicio.setServicio(null);
+        this.dlgDetalleServicio.setPieza(null);
+    }
+
+    private void btnEliminarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarServicioActionPerformed
+        int renglonElegido = this.tablaConceptos.getSelectedRow();
+        if (renglonElegido == -1) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un Servicio",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            listaServicios.remove(renglonElegido);
+            this.llenarTablaServicios();
+            this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+        }
+    }//GEN-LAST:event_btnEliminarServicioActionPerformed
+
+    public void cargarTabla() {
+        List<Cliente> listaClientes = this.fachada.buscarTodasCliente();
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaClientes.getModel();
+        modeloTabla.setRowCount(0);
+        for (Cliente cliente : listaClientes) {
+            Object[] fila = new Object[2];
+            fila[0] = cliente.getIdcliente();
+            fila[1] = cliente.getNombre();
+            modeloTabla.addRow(fila);
+        }
+    }
+
+    private void llenaCamposCliente(int renglonElegido) {
+        Integer idCliente = (Integer) this.tablaClientes.getValueAt(renglonElegido, 0);
+        this.clienteRegistrado = this.fachada.buscarPorIDCliente(idCliente);
+        this.clienteDireccion.setText(clienteRegistrado.getDireccion());
+        this.clienteTel.setText(clienteRegistrado.getTelefono());
+        this.clienteNom.setText(clienteRegistrado.getNombre());
+        this.clienteYaRegistrado = true;
+        this.llenarComboboxVehiculosCliente();
+        this.llenarCamposVehiculo();
+    }
+
+    private void quitarEditables() {
+        this.clienteNom.setEditable(false);
+        this.clienteDireccion.setEditable(false);
+        this.clienteTel.setEditable(false);
+        this.nombreTF.setEditable(false);
+        this.marcaTF.setEditable(false);
+        this.modeloTF.setEditable(false);
+    }
+
+    private void llenarComboboxVehiculosCliente() {
+        this.limpiarComboboxVehiculos();
+        this.listaVehiculosCliente = this.controlReglasNegocio.recuperaVehiculoCliente(this.clienteRegistrado.getIdcliente());
+        for (Vehiculo vehiculoCliente : listaVehiculosCliente) {
+            this.cbVehiculos.addItem(vehiculoCliente.getNombre());
+        }
+        this.cbVehiculos.setEnabled(true);
+    }
+
+    private void llenarCamposVehiculo() {
+        this.nombreTF.setText(listaVehiculosCliente.get(this.cbVehiculos.getSelectedIndex()).getNombre().toString());
+        this.marcaTF.setText(listaVehiculosCliente.get(this.cbVehiculos.getSelectedIndex()).getMarca().toString());
+        this.modeloTF.setText(listaVehiculosCliente.get(this.cbVehiculos.getSelectedIndex()).getModelo().toString());
+        int idVehiculo = listaVehiculosCliente.get(this.cbVehiculos.getSelectedIndex()).getIdvehiculo();
+        this.vehiculoRegistrado = this.fachada.buscarPorIDVehiculo(idVehiculo);
+    }
+
+    private void limpiarComboboxVehiculos() {
+        DefaultComboBoxModel sss = new DefaultComboBoxModel();
+        this.cbVehiculos.setModel(sss);
+    }
 
     private void salirAdministrarVentas() {
         FrmInicioSesion frmInicioSesion = new FrmInicioSesion();
@@ -632,6 +797,43 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         return total;
     }
 
+    private boolean validarDatos() {
+        String nombre = this.clienteNom.getText();
+        String telefono = this.clienteTel.getText();
+        String direccion = this.clienteDireccion.getText();
+        String vehiculoNombre = this.nombreTF.getText();
+        String vehiculoMarca = this.marcaTF.getText();
+        String vehiculoModelo = this.modeloTF.getText();
+
+        if (nombre.equalsIgnoreCase("")
+                || telefono.equalsIgnoreCase("")
+                || direccion.equalsIgnoreCase("")
+                || vehiculoNombre.equalsIgnoreCase("")
+                || vehiculoMarca.equalsIgnoreCase("")
+                || vehiculoModelo.equalsIgnoreCase("")) {
+            return false;
+        }
+
+        if (this.listaServicios.isEmpty()) {
+            return false;
+        }
+
+        if (this.isNumeric(telefono) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException error) {
+            return false;
+        }
+    }
+
 //    /**
 //     * @param args the command line arguments
 //     */
@@ -669,11 +871,12 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAgregarServicio1;
+    private javax.swing.JButton btnAgregarServicio;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnClienteExistente;
     private javax.swing.JButton btnConsultarVenta;
     private javax.swing.JButton btnEditarVenta;
+    private javax.swing.JButton btnEliminarServicio;
     private javax.swing.JButton btnEliminarVenta;
     private javax.swing.JButton btnGenerar;
     private javax.swing.JButton btnRegistrarVenta;
@@ -690,7 +893,6 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -699,11 +901,11 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
-    private javax.swing.JList<String> jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
@@ -712,9 +914,9 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     private javax.swing.JTextField modeloTF;
     private javax.swing.JTextField nombreTF;
     private javax.swing.JTextPane notasTF;
+    private javax.swing.JTable tablaClientes;
     private javax.swing.JTable tablaConceptos;
+    private javax.swing.JTable tablaConceptos1;
     private javax.swing.JTextField totalVentaTF;
-    private javax.swing.JTextField totalVentaTF1;
-    private javax.swing.JTextField totalVentaTF2;
     // End of variables declaration//GEN-END:variables
 }

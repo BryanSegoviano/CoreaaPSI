@@ -12,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import dominio.Cliente;
+import dominio.Vehiculo;
 import dominio.Venta;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -42,10 +43,19 @@ public class VentaJpaController implements Serializable {
                 idcliente = em.getReference(idcliente.getClass(), idcliente.getIdcliente());
                 venta.setIdcliente(idcliente);
             }
+            Vehiculo idvehiculo = venta.getIdvehiculo();
+            if (idvehiculo != null) {
+                idvehiculo = em.getReference(idvehiculo.getClass(), idvehiculo.getIdvehiculo());
+                venta.setIdvehiculo(idvehiculo);
+            }
             em.persist(venta);
             if (idcliente != null) {
                 idcliente.getVentaList().add(venta);
                 idcliente = em.merge(idcliente);
+            }
+            if (idvehiculo != null) {
+                idvehiculo.getVentaList().add(venta);
+                idvehiculo = em.merge(idvehiculo);
             }
             em.getTransaction().commit();
         } finally {
@@ -63,9 +73,15 @@ public class VentaJpaController implements Serializable {
             Venta persistentVenta = em.find(Venta.class, venta.getIdventa());
             Cliente idclienteOld = persistentVenta.getIdcliente();
             Cliente idclienteNew = venta.getIdcliente();
+            Vehiculo idvehiculoOld = persistentVenta.getIdvehiculo();
+            Vehiculo idvehiculoNew = venta.getIdvehiculo();
             if (idclienteNew != null) {
                 idclienteNew = em.getReference(idclienteNew.getClass(), idclienteNew.getIdcliente());
                 venta.setIdcliente(idclienteNew);
+            }
+            if (idvehiculoNew != null) {
+                idvehiculoNew = em.getReference(idvehiculoNew.getClass(), idvehiculoNew.getIdvehiculo());
+                venta.setIdvehiculo(idvehiculoNew);
             }
             venta = em.merge(venta);
             if (idclienteOld != null && !idclienteOld.equals(idclienteNew)) {
@@ -75,6 +91,14 @@ public class VentaJpaController implements Serializable {
             if (idclienteNew != null && !idclienteNew.equals(idclienteOld)) {
                 idclienteNew.getVentaList().add(venta);
                 idclienteNew = em.merge(idclienteNew);
+            }
+            if (idvehiculoOld != null && !idvehiculoOld.equals(idvehiculoNew)) {
+                idvehiculoOld.getVentaList().remove(venta);
+                idvehiculoOld = em.merge(idvehiculoOld);
+            }
+            if (idvehiculoNew != null && !idvehiculoNew.equals(idvehiculoOld)) {
+                idvehiculoNew.getVentaList().add(venta);
+                idvehiculoNew = em.merge(idvehiculoNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -109,6 +133,11 @@ public class VentaJpaController implements Serializable {
             if (idcliente != null) {
                 idcliente.getVentaList().remove(venta);
                 idcliente = em.merge(idcliente);
+            }
+            Vehiculo idvehiculo = venta.getIdvehiculo();
+            if (idvehiculo != null) {
+                idvehiculo.getVentaList().remove(venta);
+                idvehiculo = em.merge(idvehiculo);
             }
             em.remove(venta);
             em.getTransaction().commit();

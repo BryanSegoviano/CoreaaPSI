@@ -163,7 +163,7 @@ public class Pieza implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Pieza[ idpieza=" + idpieza + " ]";
+        return this.nombre;
     }
     
 }
