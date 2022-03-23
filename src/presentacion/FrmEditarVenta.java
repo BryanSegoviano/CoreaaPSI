@@ -4,19 +4,47 @@
  * and open the template in the editor.
  */
 package presentacion;
-
+import accesoDatos.ClienteJpaController;
+import accesoDatos.RelclientevehiculoJpaController;
+import accesoDatos.RelventaservicioJpaController;
+import accesoDatos.ServicioJpaController;
+import accesoDatos.VehiculoJpaController;
+import accesoDatos.VentaJpaController;
+import controles.ControlServicio;
+import controles.Fachada;
+import controles.IFachada;
+import dominio.Cliente;
+import dominio.Relclientevehiculo;
+import dominio.Relventaservicio;
+import dominio.Servicio;
+import dominio.Vehiculo;
+import dominio.Venta;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.Persistence;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author bryan
  */
 public class FrmEditarVenta extends javax.swing.JFrame {
-
+    private ArrayList<Servicio> listaServicios;
+    private DlgDetalleServicio dlgDetalleServicio;
+    private DlgTotalServicio dlgTotalServicio;
+    private IFachada fachada;
     /**
      * Creates new form FrmEditarVenta
      */
     public FrmEditarVenta() {
+        this.fachada = new Fachada();
         initComponents();
         this.setLocationRelativeTo(null);
+        this.listaServicios = new ArrayList<>();
+        this.dlgDetalleServicio = new DlgDetalleServicio(this, rootPaneCheckingEnabled);
     }
 
     /**
@@ -81,7 +109,6 @@ public class FrmEditarVenta extends javax.swing.JFrame {
             }
         });
 
-        btnEliminarVenta.setBackground(new java.awt.Color(255, 255, 255));
         btnEliminarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnEliminarVenta.setText("Eliminar Venta");
         btnEliminarVenta.addActionListener(new java.awt.event.ActionListener() {
@@ -176,7 +203,6 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         fechaVentalbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         fechaVentalbl.setText("fecha");
 
-        btnBuscarVenta.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnBuscarVenta.setText("Buscar");
         btnBuscarVenta.addActionListener(new java.awt.event.ActionListener() {
@@ -449,7 +475,33 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
-
+        int idVenta = Integer.parseInt(this.idVentaTF.getText());
+        Venta venta = this.fachada.buscarPorIDVenta(idVenta);
+        String notas = this.notasTF.getText();
+        List <Relventaservicio> listventaserv = this.fachada.buscarTodasRelventaservicio();
+        List <Servicio> listServ = new ArrayList<>();
+        for (int i = 0; i < listventaserv.size(); i++) {
+            if (venta.getIdventa() == listventaserv.get(i).getIdventa().getIdventa()) {
+                listServ.add(this.fachada.buscarPorIDServicio(listventaserv.get(i).getIdservicio().getIdservicio()));
+            }
+        }
+        for (int i = 0; i < this.listaServicios.size(); i++) {
+            if (listServ.size()>=this.listaServicios.size()) {
+                listServ.get(i).setConcepto(this.listaServicios.get(i).getConcepto());
+                listServ.get(i).setCosto(this.listaServicios.get(i).getCosto());
+                this.fachada.actualizarServicio(listServ.get(i));
+            }
+            Servicio servicio = new Servicio(new Date(), this.listaServicios.get(i).getCosto(), this.listaServicios.get(i).getConcepto(), null);
+            this.fachada.guardarServicio(servicio);
+        }
+        if(!venta.getNotas().equalsIgnoreCase(notas)){
+            venta.setNotas(notas);
+            this.fachada.actualizarVenta(venta);
+        }
+        double totalventa = this.obtenerTotalVenta();
+        venta.setTotal(totalventa);
+        this.fachada.actualizarVenta(venta);
+        
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -457,11 +509,22 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnBuscarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVentaActionPerformed
-
+        if (this.idVentaTF.getText().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar un ID a buscar.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            int idVenta = Integer.parseInt(this.idVentaTF.getText());
+            this.buscarVenta(idVenta);
+        }
     }//GEN-LAST:event_btnBuscarVentaActionPerformed
 
     private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
-
+        dlgDetalleServicio.setVisible(true);
+        Servicio servicio = this.dlgDetalleServicio.getServicio();
+        this.listaServicios.add(servicio);
+        this.llenarTablaServicios();
     }//GEN-LAST:event_btnAgregarServicioActionPerformed
 
     private void btnRegistrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarVentaActionPerformed
@@ -498,6 +561,80 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         FrmInicioSesion frmInicioSesion = new FrmInicioSesion();
         frmInicioSesion.setVisible(true);
         this.dispose();
+    }
+    private void buscarVenta(int idVenta) {
+        Venta venta = this.fachada.buscarPorIDVenta(idVenta);
+        if (venta != null) {
+            this.llenarDatosVenta(venta);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Venta no encontrada.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+    private void llenarDatosVenta(Venta venta) {
+        this.fechaVentalbl.setText(new SimpleDateFormat("dd-MM-yyyy").format(venta.getFecha()));
+        this.clienteNom.setText(venta.getIdcliente().getNombre());
+        this.clienteTel.setText(venta.getIdcliente().getTelefono());
+        this.clienteDireccion.setText(venta.getIdcliente().getDireccion());
+
+        this.marcaTF.setText(venta.getIdvehiculo().getMarca());
+        this.nombreTF.setText(venta.getIdvehiculo().getNombre());
+        this.modeloTF.setText(venta.getIdvehiculo().getModelo());
+
+        this.notasTF.setText(venta.getNotas());
+
+        List<Relventaservicio> relVentaServicio = this.fachada.buscarTodasRelventaservicio();
+        List<Relventaservicio> listaVentaServicios = new ArrayList<Relventaservicio>();
+        ArrayList<Servicio> listaServicios = new ArrayList<Servicio>();
+        for (int i = 0; i < relVentaServicio.size(); i++) {
+            if (relVentaServicio.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
+                listaVentaServicios.add(relVentaServicio.get(i));
+            }
+        }
+        for (Relventaservicio listaVentaServicio : listaVentaServicios) {
+            listaServicios.add(listaVentaServicio.getIdservicio());
+        }
+        this.llenarTablaServicios(listaServicios);
+        this.totalVentaTF.setText(venta.getTotal() + "");
+    }
+    private void llenarTablaServicios(ArrayList<Servicio> listaServicios) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConceptos.getModel();
+        modeloTabla.setRowCount(0);
+        for (Servicio servicio : listaServicios) {
+            Object[] fila = new Object[2];
+            fila[0] = servicio.getConcepto();
+            fila[1] = servicio.getCosto();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaProductosBuscados();
+    }
+    private void centrarDatosTablaProductosBuscados() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaConceptos.getColumnCount(); i++) {
+            this.tablaConceptos.setDefaultRenderer(this.tablaConceptos.getColumnClass(i), columna);
+        }
+    }
+    private void llenarTablaServicios() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConceptos.getModel();
+        modeloTabla.setRowCount(0);
+        for (Servicio servicio : this.listaServicios) {
+            Object[] fila = new Object[2];
+            fila[0] = servicio.getConcepto();
+            fila[1] = servicio.getCosto();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaProductosBuscados();
+    }
+    private Double obtenerTotalVenta() {
+        Double total = 0.0;
+        for (Servicio listaServicio : this.listaServicios) {
+            total += listaServicio.getCosto();
+        }
+        return total;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
