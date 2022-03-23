@@ -486,14 +486,14 @@ public class FrmEditarVenta extends javax.swing.JFrame {
             }
         }
         for (int i = 0; i < this.listaServicios.size(); i++) {
-            if (listServ.size()>=this.listaServicios.size()) {
-                listServ.get(i).setConcepto(this.listaServicios.get(i).getConcepto());
-                listServ.get(i).setCosto(this.listaServicios.get(i).getCosto());
-                this.fachada.actualizarServicio(listServ.get(i));
-            }
-            Servicio servicio = new Servicio(new Date(), this.listaServicios.get(i).getCosto(), this.listaServicios.get(i).getConcepto(), null);
-            this.fachada.guardarServicio(servicio);
+            Servicio nServicio = new Servicio(new Date(), this.listaServicios.get(i).getCosto(), this.listaServicios.get(i).getConcepto(), null);
+            this.fachada.guardarServicio(nServicio);
+            Relventaservicio nRelVenServ = new Relventaservicio(nServicio, venta);
+            this.fachada.guardarRelventaservicio(nRelVenServ);
         }
+        /*for (int i = 0; this.listaServicios.size() < 10; i++) {
+            Relventaservicio n
+        }*/
         if(!venta.getNotas().equalsIgnoreCase(notas)){
             venta.setNotas(notas);
             this.fachada.actualizarVenta(venta);
@@ -619,8 +619,18 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         }
     }
     private void llenarTablaServicios() {
+        int idVenta = Integer.parseInt(this.idVentaTF.getText());
+        Venta venta = this.fachada.buscarPorIDVenta(idVenta);
+        String notas = this.notasTF.getText();
+        List <Relventaservicio> listventaserv = this.fachada.buscarTodasRelventaservicio();
+        List <Servicio> listServ = new ArrayList<>();
+        for (int i = 0; i < listventaserv.size(); i++) {
+            if (venta.getIdventa() == listventaserv.get(i).getIdventa().getIdventa()) {
+                listServ.add(this.fachada.buscarPorIDServicio(listventaserv.get(i).getIdservicio().getIdservicio()));
+            }
+        }
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConceptos.getModel();
-        modeloTabla.setRowCount(0);
+        modeloTabla.setRowCount(listServ.size());
         for (Servicio servicio : this.listaServicios) {
             Object[] fila = new Object[2];
             fila[0] = servicio.getConcepto();
@@ -630,9 +640,20 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         this.centrarDatosTablaProductosBuscados();
     }
     private Double obtenerTotalVenta() {
+        int idVenta = Integer.parseInt(this.idVentaTF.getText());
+        Venta venta = this.fachada.buscarPorIDVenta(idVenta);
+        String notas = this.notasTF.getText();
+        List <Relventaservicio> listventaserv = this.fachada.buscarTodasRelventaservicio();
+        List <Servicio> listServ = new ArrayList<>();
+        for (int i = 0; i < listventaserv.size(); i++) {
+            if (venta.getIdventa() == listventaserv.get(i).getIdventa().getIdventa()) {
+                listServ.add(this.fachada.buscarPorIDServicio(listventaserv.get(i).getIdservicio().getIdservicio()));
+            }
+        }
         Double total = 0.0;
-        for (Servicio listaServicio : this.listaServicios) {
-            total += listaServicio.getCosto();
+        for (Servicio servicio : listServ) {
+            total += servicio.getCosto();
+            System.out.println(total);
         }
         return total;
     }
