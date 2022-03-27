@@ -24,6 +24,7 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
     private final Fachada fachada;
     private ControlReglasNegocio controlReglasNegocio;
     private List<Pieza> listaPiezas;
+    private int cantidadPieza;
 
     public DlgDetalleServicio(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -79,11 +80,21 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
         jLabel4.setText("Cantidad:");
 
         cantidadTF.setEnabled(false);
+        cantidadTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                cantidadTFKeyReleased(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setText("Costo:");
 
         costoTF.setName(""); // NOI18N
+        costoTF.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                costoTFKeyReleased(evt);
+            }
+        });
 
         btnAgregar.setBackground(new java.awt.Color(0, 204, 0));
         btnAgregar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -259,6 +270,38 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
         this.esPieza();
     }//GEN-LAST:event_checkboxPiezaActionPerformed
 
+    private void costoTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_costoTFKeyReleased
+        String costo = costoTF.getText();
+        boolean isNumeric = costo.chars().allMatch(Character::isDigit);
+        if (!isNumeric) {
+            JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+            this.costoTF.setText("");
+        } else {
+
+        }
+    }//GEN-LAST:event_costoTFKeyReleased
+
+    private void cantidadTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cantidadTFKeyReleased
+        String cantidadSolicitada = cantidadTF.getText();
+        boolean isNumeric = cantidadSolicitada.chars().allMatch(Character::isDigit);
+        if (cantidadTF.getText().equals("")) {
+            
+        }
+        if (!isNumeric) {
+            JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+            this.cantidadTF.setText("");
+        } else {
+            int cantidadSolicitadaInt=Integer.parseInt(cantidadSolicitada);
+            if (cantidadSolicitadaInt > cantidadPieza) {
+                JOptionPane.showMessageDialog(this, "La cantidad solicitada es mayor a la que se tiene en existencia",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+            this.cantidadTF.setText("");
+            }
+        }
+    }//GEN-LAST:event_cantidadTFKeyReleased
+
     public boolean esPieza() {
         boolean esPieza = checkboxPieza.isSelected();
         if (esPieza) {
@@ -300,7 +343,7 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
     }
 
     private void cargarCantidadPieza() {
-        int cantidadPieza = listaPiezas.get(this.cbPieza.getSelectedIndex()).getCantidad();
+        cantidadPieza = listaPiezas.get(this.cbPieza.getSelectedIndex()).getCantidad();
         String cantidadString = String.valueOf(cantidadPieza);
         this.existenciaTF.setText(cantidadString);
     }

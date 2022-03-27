@@ -362,7 +362,6 @@
                       </Group>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="jSeparator3" min="-2" pref="10" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
@@ -458,6 +457,9 @@
             <Component class="javax.swing.JTextField" name="clienteNom">
             </Component>
             <Component class="javax.swing.JTextField" name="clienteTel">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="clienteTelKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="clienteDireccion">
             </Component>

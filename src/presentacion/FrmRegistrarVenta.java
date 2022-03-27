@@ -165,6 +165,12 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel7.setText("Vehiculos:");
 
+        clienteTel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                clienteTelKeyReleased(evt);
+            }
+        });
+
         jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel8.setText("Fecha:");
 
@@ -502,7 +508,6 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -690,6 +695,17 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
             this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
         }
     }//GEN-LAST:event_btnEliminarServicioActionPerformed
+
+    private void clienteTelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_clienteTelKeyReleased
+        String telefono = this.clienteTel.getText();
+        boolean isNumeric = telefono.chars().allMatch(Character::isDigit);
+        if (!isNumeric) {
+            JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+            this.clienteTel.setText("");
+        } else {
+        }
+    }//GEN-LAST:event_clienteTelKeyReleased
 
     public void cargarTabla() {
         List<Cliente> listaClientes = this.fachada.buscarTodasCliente();
