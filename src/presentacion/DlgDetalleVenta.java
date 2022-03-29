@@ -7,6 +7,8 @@ package presentacion;
 
 import controles.Fachada;
 import controles.IFachada;
+import dominio.Pieza;
+import dominio.Relventapieza;
 import dominio.Relventaservicio;
 import dominio.Servicio;
 import dominio.Venta;
@@ -24,7 +26,7 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
 
     private Venta venta;
     private final IFachada fachada;
-    
+
     public DlgDetalleVenta(java.awt.Frame parent, boolean modal, Venta venta) {
         super(parent, modal);
         initComponents();
@@ -53,7 +55,6 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
         clienteNom = new javax.swing.JTextField();
         clienteTel = new javax.swing.JTextField();
         clienteDireccion = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         notasTF = new javax.swing.JTextPane();
@@ -66,11 +67,15 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
         modeloTF = new javax.swing.JTextField();
         jLabel15 = new javax.swing.JLabel();
         fechaVentalbl = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tablaConceptos = new javax.swing.JTable();
         totalVentaTF = new javax.swing.JTextField();
         jLabel16 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablaPiezas = new javax.swing.JTable();
+        jLabel17 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaConceptos = new javax.swing.JTable();
+        jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Detalle de la venta");
@@ -101,9 +106,6 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
         clienteTel.setEnabled(false);
 
         clienteDireccion.setEnabled(false);
-
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel9.setText("Servicios de la venta");
 
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel10.setText("Notas:");
@@ -144,7 +146,13 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
         fechaVentalbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         fechaVentalbl.setText("fecha");
 
-        tablaConceptos.setModel(new javax.swing.table.DefaultTableModel(
+        totalVentaTF.setEnabled(false);
+        totalVentaTF.setMinimumSize(new java.awt.Dimension(64, 23));
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel16.setText("Total:");
+
+        tablaPiezas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -167,14 +175,40 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        tablaPiezas.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(tablaPiezas);
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel17.setText("Piezas");
+
+        tablaConceptos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Concepto", "Monto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tablaConceptos.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tablaConceptos);
 
-        totalVentaTF.setEnabled(false);
-        totalVentaTF.setMinimumSize(new java.awt.Dimension(64, 23));
-
-        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel16.setText("Total:");
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel9.setText("Servicios");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -185,12 +219,23 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel16)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(59, 59, 59)
+                                        .addComponent(jLabel9))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(19, 19, 19)
+                                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addGap(104, 104, 104)
+                                        .addComponent(jLabel17)))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -287,18 +332,22 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
                     .addComponent(jLabel14)
                     .addComponent(modeloTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(39, 39, 39)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel16)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel17)
+                            .addComponent(jLabel9))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(10, 10, 10)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnGenerar)
                 .addContainerGap())
@@ -347,6 +396,11 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
         List<Relventaservicio> relVentaServicio = this.fachada.buscarTodasRelventaservicio();
         List<Relventaservicio> listaVentaServicios = new ArrayList<Relventaservicio>();
         ArrayList<Servicio> listaServicios = new ArrayList<Servicio>();
+
+        List<Relventapieza> relVentaPieza = this.fachada.buscarTodasRelventapieza();
+        List<Relventapieza> listaVentaPiezas = new ArrayList<Relventapieza>();
+        ArrayList<Pieza> listaPiezas = new ArrayList<Pieza>();
+
         for (int i = 0; i < relVentaServicio.size(); i++) {
             if (relVentaServicio.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
                 listaVentaServicios.add(relVentaServicio.get(i));
@@ -355,7 +409,17 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
         for (Relventaservicio listaVentaServicio : listaVentaServicios) {
             listaServicios.add(listaVentaServicio.getIdservicio());
         }
+
+        for (int i = 0; i < relVentaPieza.size(); i++) {
+            if (relVentaPieza.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
+                listaVentaPiezas.add(relVentaPieza.get(i));
+            }
+        }
+        for (Relventapieza listaVentaPieza : listaVentaPiezas) {
+            listaPiezas.add(listaVentaPieza.getIdpieza());
+        }
         this.llenarTablaServicios(listaServicios);
+        this.llenarTablaPiezas(listaPiezas);
         this.totalVentaTF.setText(venta.getTotal() + "");
     }
 
@@ -369,6 +433,27 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
             modeloTabla.addRow(fila);
         }
         this.centrarDatosTablaProductosBuscados();
+    }
+
+    private void llenarTablaPiezas(ArrayList<Pieza> listaPieza) {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaPiezas.getModel();
+        modeloTabla.setRowCount(0);
+        for (Pieza pieza : listaPieza) {
+            Object[] fila = new Object[3];
+            fila[0] = pieza.getNombre();
+            fila[1] = pieza.getCosto();
+            fila[2] = pieza.getCantidad();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaPiezas();
+    }
+
+    private void centrarDatosTablaPiezas() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaPiezas.getColumnCount(); i++) {
+            this.tablaPiezas.setDefaultRenderer(this.tablaPiezas.getColumnClass(i), columna);
+        }
     }
 
     private void centrarDatosTablaProductosBuscados() {
@@ -392,6 +477,7 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -401,12 +487,14 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField marcaTF;
     private javax.swing.JTextField modeloTF;
     private javax.swing.JTextField nombreTF;
     private javax.swing.JTextPane notasTF;
     private javax.swing.JTable tablaConceptos;
+    private javax.swing.JTable tablaPiezas;
     private javax.swing.JTextField totalVentaTF;
     // End of variables declaration//GEN-END:variables
 }

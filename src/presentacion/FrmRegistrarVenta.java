@@ -47,7 +47,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         this.controlReglasNegocio = new ControlReglasNegocio();
         this.vendedor = FrmInicioSesion.vendedor;
         this.clienteYaRegistrado = false;
-        this.cargarTabla();
+        this.cargarTablaClientes();
         this.listaVehiculosCliente = new ArrayList<>();
     }
 
@@ -105,7 +105,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         btnEliminarServicio = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tablaConceptos1 = new javax.swing.JTable();
+        tablaPiezas = new javax.swing.JTable();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -313,7 +313,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel16.setText("Piezas");
 
-        tablaConceptos1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaPiezas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -336,13 +336,13 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        tablaConceptos1.getTableHeader().setReorderingAllowed(false);
-        jScrollPane3.setViewportView(tablaConceptos1);
-        if (tablaConceptos1.getColumnModel().getColumnCount() > 0) {
-            tablaConceptos1.getColumnModel().getColumn(0).setResizable(false);
-            tablaConceptos1.getColumnModel().getColumn(1).setResizable(false);
-            tablaConceptos1.getColumnModel().getColumn(2).setResizable(false);
-            tablaConceptos1.getColumnModel().getColumn(2).setHeaderValue("Cantidad");
+        tablaPiezas.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(tablaPiezas);
+        if (tablaPiezas.getColumnModel().getColumnCount() > 0) {
+            tablaPiezas.getColumnModel().getColumn(0).setResizable(false);
+            tablaPiezas.getColumnModel().getColumn(1).setResizable(false);
+            tablaPiezas.getColumnModel().getColumn(2).setResizable(false);
+            tablaPiezas.getColumnModel().getColumn(2).setHeaderValue("Cantidad");
         }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -524,7 +524,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                             .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel15)
                             .addComponent(btnAgregarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(22, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(21, 21, 21)
@@ -631,7 +631,12 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         if (this.clienteYaRegistrado == false) {
             venta = new Venta(new Date(), totalVenta, notas, vendedor, clienteNuevo, vehiculoNuevo);
         }
-        this.dlgTotalServicio = new DlgTotalServicio(this, rootPaneCheckingEnabled, venta, this.listaServicios, clienteYaRegistrado);
+        this.dlgTotalServicio = new DlgTotalServicio(this,
+                rootPaneCheckingEnabled,
+                venta,
+                this.listaServicios,
+                clienteYaRegistrado,
+                this.listaPieza);
         this.dlgTotalServicio.setVisible(true);
     }
 
@@ -663,10 +668,10 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConsultarVentaActionPerformed
 
     private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
-        this.agregarServicio();
+        this.agregarServicioVenta();
     }//GEN-LAST:event_btnAgregarServicioActionPerformed
 
-    private void agregarServicio() {
+    private void agregarServicioVenta() {
         this.dlgDetalleServicio.setVisible(true);
         Servicio servicio = this.dlgDetalleServicio.getServicio();
         Pieza pieza = this.dlgDetalleServicio.getPieza();
@@ -677,7 +682,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         }
         if (pieza != null) {
             this.listaPieza.add(pieza);
-            this.llenarTablaServicios();
+            this.llenarTablaPiezas();
             this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
         }
         this.dlgDetalleServicio.setServicio(null);
@@ -685,14 +690,23 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     }
 
     private void btnEliminarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarServicioActionPerformed
-        int renglonElegido = this.tablaConceptos.getSelectedRow();
-        if (renglonElegido == -1) {
-            JOptionPane.showMessageDialog(this, "Debes seleccionar un Servicio",
+        int renglonConceptos = this.tablaConceptos.getSelectedRow();
+        int renglonPiezas = this.tablaPiezas.getSelectedRow();
+
+        if (renglonConceptos == -1 && renglonPiezas == -1) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un Servicio o Pieza a eliminar",
                     "Advertencia", JOptionPane.INFORMATION_MESSAGE);
         } else {
-            listaServicios.remove(renglonElegido);
-            this.llenarTablaServicios();
-            this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+            if (renglonConceptos != -1) {
+                this.listaServicios.remove(renglonConceptos);
+                this.llenarTablaServicios();
+                this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+            }
+            if (renglonPiezas != -1) {
+                this.listaPieza.remove(renglonPiezas);
+                this.llenarTablaPiezas();
+                this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+            }
         }
     }//GEN-LAST:event_btnEliminarServicioActionPerformed
 
@@ -707,7 +721,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_clienteTelKeyReleased
 
-    public void cargarTabla() {
+    public void cargarTablaClientes() {
         List<Cliente> listaClientes = this.fachada.buscarTodasCliente();
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaClientes.getModel();
         modeloTabla.setRowCount(0);
@@ -717,6 +731,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
             fila[1] = cliente.getNombre();
             modeloTabla.addRow(fila);
         }
+        this.centrarDatosTablaClientes();
     }
 
     private void llenaCamposCliente(int renglonElegido) {
@@ -794,10 +809,23 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
             fila[1] = servicio.getCosto();
             modeloTabla.addRow(fila);
         }
-        this.centrarDatosTablaProductosBuscados();
+        this.centrarDatosTablaServicios();
     }
 
-    private void centrarDatosTablaProductosBuscados() {
+    private void llenarTablaPiezas() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaPiezas.getModel();
+        modeloTabla.setRowCount(0);
+        for (Pieza pieza : this.listaPieza) {
+            Object[] fila = new Object[3];
+            fila[0] = pieza.getNombre();
+            fila[1] = pieza.getCosto();
+            fila[2] = pieza.getCantidad();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaPiezas();
+    }
+
+    private void centrarDatosTablaServicios() {
         DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
         columna.setHorizontalAlignment(0);
         for (int i = 0; i < this.tablaConceptos.getColumnCount(); i++) {
@@ -805,10 +833,29 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         }
     }
 
+    private void centrarDatosTablaClientes() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaClientes.getColumnCount(); i++) {
+            this.tablaClientes.setDefaultRenderer(this.tablaClientes.getColumnClass(i), columna);
+        }
+    }
+
+    private void centrarDatosTablaPiezas() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaPiezas.getColumnCount(); i++) {
+            this.tablaPiezas.setDefaultRenderer(this.tablaPiezas.getColumnClass(i), columna);
+        }
+    }
+
     private Double obtenerTotalVenta() {
         Double total = 0.0;
         for (Servicio listaServicio : this.listaServicios) {
             total += listaServicio.getCosto();
+        }
+        for (Pieza pieza : this.listaPieza) {
+            total += pieza.getCosto();
         }
         return total;
     }
@@ -932,7 +979,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     private javax.swing.JTextPane notasTF;
     private javax.swing.JTable tablaClientes;
     private javax.swing.JTable tablaConceptos;
-    private javax.swing.JTable tablaConceptos1;
+    private javax.swing.JTable tablaPiezas;
     private javax.swing.JTextField totalVentaTF;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,18 +5,54 @@
  */
 package presentacion;
 
+import accesoDatos.ClienteJpaController;
+import accesoDatos.RelclientevehiculoJpaController;
+import accesoDatos.RelventaservicioJpaController;
+import accesoDatos.ServicioJpaController;
+import accesoDatos.VehiculoJpaController;
+import accesoDatos.VentaJpaController;
+import controles.ControlServicio;
+import controles.Fachada;
+import controles.IFachada;
+import dominio.Cliente;
+import dominio.Pieza;
+import dominio.Relclientevehiculo;
+import dominio.Relventapieza;
+import dominio.Relventaservicio;
+import dominio.Servicio;
+import dominio.Vehiculo;
+import dominio.Venta;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.persistence.Persistence;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author bryan
  */
 public class FrmEditarVenta extends javax.swing.JFrame {
 
+    private ArrayList<Servicio> listaServicios;
+    private DlgDetalleServicio dlgDetalleServicio;
+    private ArrayList<Pieza> listaPiezas;
+    private IFachada fachada;
+    private Venta venta;
+
     /**
      * Creates new form FrmEditarVenta
      */
     public FrmEditarVenta() {
+        this.fachada = new Fachada();
         initComponents();
         this.setLocationRelativeTo(null);
+        this.listaServicios = new ArrayList<>();
+        this.listaPiezas = new ArrayList<>();
+        this.dlgDetalleServicio = new DlgDetalleServicio(this, rootPaneCheckingEnabled);
     }
 
     /**
@@ -44,7 +80,6 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         clienteNom = new javax.swing.JTextField();
         clienteTel = new javax.swing.JTextField();
         clienteDireccion = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         notasTF = new javax.swing.JTextPane();
@@ -60,13 +95,18 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         fechaVentalbl = new javax.swing.JLabel();
         btnBuscarVenta = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        tablaConceptos = new javax.swing.JTable();
-        btnAgregarServicio = new javax.swing.JButton();
-        totalVentaTF = new javax.swing.JTextField();
-        jLabel16 = new javax.swing.JLabel();
         cbVehiculos = new javax.swing.JComboBox<>();
         jSeparator1 = new javax.swing.JSeparator();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tablaPiezas = new javax.swing.JTable();
+        jLabel17 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaConceptos = new javax.swing.JTable();
+        jLabel9 = new javax.swing.JLabel();
+        btnEliminarServicio = new javax.swing.JButton();
+        btnAgregarServicio = new javax.swing.JButton();
+        totalVentaTF = new javax.swing.JTextField();
+        jLabel18 = new javax.swing.JLabel();
         btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -132,9 +172,6 @@ public class FrmEditarVenta extends javax.swing.JFrame {
 
         clienteDireccion.setEnabled(false);
 
-        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
-        jLabel9.setText("Servicios de la venta");
-
         jLabel10.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel10.setText("Notas:");
 
@@ -174,7 +211,6 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         jLabel15.setText("Fecha de la venta:");
 
         fechaVentalbl.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        fechaVentalbl.setText("fecha");
 
         btnBuscarVenta.setBackground(new java.awt.Color(255, 255, 255));
         btnBuscarVenta.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -185,7 +221,10 @@ public class FrmEditarVenta extends javax.swing.JFrame {
             }
         });
 
-        tablaConceptos.setModel(new javax.swing.table.DefaultTableModel(
+        cbVehiculos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Vehiculo 1", "Vehiculo 2" }));
+        cbVehiculos.setEnabled(false);
+
+        tablaPiezas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -208,8 +247,49 @@ public class FrmEditarVenta extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        tablaPiezas.getTableHeader().setReorderingAllowed(false);
+        jScrollPane3.setViewportView(tablaPiezas);
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel17.setText("Piezas");
+
+        tablaConceptos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Concepto", "Monto"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Double.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         tablaConceptos.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tablaConceptos);
+
+        jLabel9.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel9.setText("Servicios");
+
+        btnEliminarServicio.setBackground(new java.awt.Color(0, 0, 0));
+        btnEliminarServicio.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnEliminarServicio.setText("-");
+        btnEliminarServicio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarServicioActionPerformed(evt);
+            }
+        });
 
         btnAgregarServicio.setBackground(new java.awt.Color(0, 0, 0));
         btnAgregarServicio.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -220,14 +300,12 @@ public class FrmEditarVenta extends javax.swing.JFrame {
             }
         });
 
+        totalVentaTF.setText("0.0");
         totalVentaTF.setEnabled(false);
         totalVentaTF.setMinimumSize(new java.awt.Dimension(64, 23));
 
-        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel16.setText("Total:");
-
-        cbVehiculos.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Vehiculo 1", "Vehiculo 2" }));
-        cbVehiculos.setEnabled(false);
+        jLabel18.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel18.setText("Total:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -260,17 +338,20 @@ public class FrmEditarVenta extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel9)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel16)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnAgregarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(59, 59, 59)
+                                .addComponent(jLabel9))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(19, 19, 19)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(104, 104, 104)
+                                .addComponent(jLabel17)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel10)))
@@ -310,12 +391,20 @@ public class FrmEditarVenta extends javax.swing.JFrame {
                                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                 .addComponent(clienteTel)
                                                 .addComponent(clienteDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
-                        .addGap(0, 183, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(133, 133, 133)
+                .addComponent(jLabel18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnAgregarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnGenerar)
-                .addGap(256, 256, 256))
+                .addGap(69, 69, 69))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -329,56 +418,65 @@ public class FrmEditarVenta extends javax.swing.JFrame {
                     .addComponent(idVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
                     .addComponent(btnBuscarVenta))
-                .addGap(15, 15, 15)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(clienteNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(clienteTel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(clienteDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cbVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7))
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel12)
-                            .addComponent(marcaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13)
-                            .addComponent(nombreTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel14)
-                            .addComponent(modeloTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel15)
-                        .addComponent(fechaVentalbl)))
-                .addGap(39, 39, 39)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(15, 15, 15)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(21, 21, 21)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(clienteNom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(clienteTel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel5))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(clienteDireccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(cbVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel7))
+                                .addGap(14, 14, 14)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel12)
+                                    .addComponent(marcaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel13)
+                                    .addComponent(nombreTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel14)
+                                    .addComponent(modeloTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel15)
+                                .addComponent(fechaVentalbl)))
+                        .addGap(39, 39, 39)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel10)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jLabel17)
+                                    .addComponent(jLabel9))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(totalVentaTF, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel16)
-                            .addComponent(btnAgregarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnGenerar)
-                .addContainerGap())
+                            .addComponent(jLabel18)
+                            .addComponent(btnAgregarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnEliminarServicio, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(33, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnGenerar)
+                        .addGap(32, 32, 32))))
         );
 
         btnCancelar.setBackground(new java.awt.Color(255, 0, 0));
@@ -409,7 +507,7 @@ public class FrmEditarVenta extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(43, 43, 43)
                         .addComponent(btnCancelar)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -449,20 +547,100 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
-
+        this.guardarCambios();
     }//GEN-LAST:event_btnGenerarActionPerformed
+
+    private void guardarCambios() {
+        //actualizar nuevos servicios con ventas
+        List<Relventaservicio> listVentaServicio = this.fachada.buscarTodasRelventaservicio();
+        for (int i = 0; i < listVentaServicio.size(); i++) {
+            if (this.venta.getIdventa() == listVentaServicio.get(i).getIdventa().getIdventa()) {
+                this.fachada.eliminarRelventaservicio(listVentaServicio.get(i).getIdrelVentaServicio());
+                this.fachada.eliminarServicio(listVentaServicio.get(i).getIdservicio().getIdservicio());
+            }
+        }
+
+        for (int i = 0; i < this.listaServicios.size(); i++) {
+            this.listaServicios.get(i).setIdservicio(null);
+            this.fachada.guardarServicio(this.listaServicios.get(i));
+        }
+
+        for (int i = 0; i < this.listaServicios.size(); i++) {
+            Servicio servicio = this.listaServicios.get(i);
+            Relventaservicio relVentaServicio = new Relventaservicio(servicio, this.venta);
+            this.fachada.guardarRelventaservicio(relVentaServicio);
+        }
+
+/////////////////////////////////////////////////////////////////////
+        //actualizar nuevas piezas con ventas
+        List<Relventapieza> listVentaPieza = this.fachada.buscarTodasRelventapieza();
+        
+        for (int i = 0; i < listVentaPieza.size(); i++) {
+            if (this.venta.getIdventa() == listVentaPieza.get(i).getIdventa().getIdventa()) {
+                this.fachada.eliminarRelventapieza(listVentaPieza.get(i).getIdrelventapieza());
+                //no se elimina la pieza, se suma la cantidad que se desocupo al quitarlo de la lista
+            }
+        }
+        
+//        for (int i = 0; i < this.listaPiezas.size(); i++) {
+//            Pieza pieza = this.listaPiezas.get(i);
+//            Pieza piezaBD = this.fachada.buscarPorIDPieza(pieza.getIdpieza());
+//            int piezaBDCantidad = piezaBD.getCantidad();
+//            int piezaCantidad = pieza.getCantidad();
+//            pieza.setCantidad(piezaBDCantidad + piezaCantidad);
+//            this.fachada.actualizarPieza(pieza);
+//        }
+
+        for (int i = 0; i < this.listaPiezas.size(); i++) {
+            Pieza pieza = this.listaPiezas.get(i);
+            Pieza piezaBD = this.fachada.buscarPorIDPieza(pieza.getIdpieza());
+            int piezaBDCantidad = piezaBD.getCantidad();
+            int piezaCantidad = pieza.getCantidad();
+            pieza.setCantidad(piezaBDCantidad - piezaCantidad);
+            this.fachada.actualizarPieza(pieza);
+            Relventapieza relVentaPieza = new Relventapieza(pieza.getCantidad() + "", pieza, this.venta);
+            this.fachada.guardarRelventapieza(relVentaPieza);
+        }
+/////////////////////////////////////////////////////////////
+        String notas = this.notasTF.getText();
+        Double total = Double.parseDouble(this.totalVentaTF.getText());
+        if (!this.venta.getNotas().equals(notas) || this.venta.getTotal() != total) {
+            this.venta.setNotas(notas);
+            this.venta.setTotal(total);
+            this.fachada.actualizarVenta(venta);
+        }
+    }
+
+    private Double obtenerTotalVenta() {
+        Double total = 0.0;
+        for (Servicio listaServicio : this.listaServicios) {
+            total += listaServicio.getCosto();
+        }
+        for (Pieza pieza : this.listaPiezas) {
+            total += pieza.getCosto();
+        }
+        return total;
+    }
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.salirAdministrarVentas();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnBuscarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarVentaActionPerformed
-
+        this.buscarVenta();
     }//GEN-LAST:event_btnBuscarVentaActionPerformed
 
-    private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
-
-    }//GEN-LAST:event_btnAgregarServicioActionPerformed
+    private void buscarVenta() {
+        if (this.idVentaTF.getText().equals("")) {
+            JOptionPane.showMessageDialog(this,
+                    "Debe ingresar un ID a buscar.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            int idVenta = Integer.parseInt(this.idVentaTF.getText());
+            this.buscarVenta(idVenta);
+        }
+    }
 
     private void btnRegistrarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarVentaActionPerformed
         this.mostrarFrmRegistrarVenta();
@@ -475,6 +653,53 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     private void btnConsultarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarVentaActionPerformed
         this.mostrarFrmConsultarVentas();
     }//GEN-LAST:event_btnConsultarVentaActionPerformed
+
+    private void btnEliminarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarServicioActionPerformed
+        this.eliminarServicioPieza();
+    }//GEN-LAST:event_btnEliminarServicioActionPerformed
+
+    private void eliminarServicioPieza() {
+        int renglonConceptos = this.tablaConceptos.getSelectedRow();
+        int renglonPiezas = this.tablaPiezas.getSelectedRow();
+
+        if (renglonConceptos == -1 && renglonPiezas == -1) {
+            JOptionPane.showMessageDialog(this, "Debes seleccionar un Servicio o Pieza a eliminar",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            if (renglonConceptos != -1) {
+                this.listaServicios.remove(renglonConceptos);
+                this.llenarTablaServicios();
+                this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+            }
+            if (renglonPiezas != -1) {
+                this.listaPiezas.remove(renglonPiezas);
+                this.llenarTablaPiezas();
+                this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+            }
+        }
+    }
+
+    private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
+        this.agregarServicioVenta();
+    }//GEN-LAST:event_btnAgregarServicioActionPerformed
+
+    private void agregarServicioVenta() {
+        this.dlgDetalleServicio.setVisible(true);
+        Servicio servicio = this.dlgDetalleServicio.getServicio();
+        Pieza pieza = this.dlgDetalleServicio.getPieza();
+        if (servicio != null) {
+            this.listaServicios.add(servicio);
+            this.llenarTablaServicios();
+            this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+        }
+        if (pieza != null) {
+            this.listaPiezas.add(pieza);
+            this.llenarTablaPiezas();
+            this.totalVentaTF.setText(this.obtenerTotalVenta() + "");
+        }
+        this.dlgDetalleServicio.setServicio(null);
+        this.dlgDetalleServicio.setPieza(null);
+    }
 
     private void mostrarFrmRegistrarVenta() {
         FrmRegistrarVenta frmRegistrarVenta = new FrmRegistrarVenta();
@@ -500,12 +725,110 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         this.dispose();
     }
 
+    private void buscarVenta(int idVenta) {
+        this.venta = this.fachada.buscarPorIDVenta(idVenta);
+        this.listaPiezas.clear();
+        this.listaServicios.clear();
+        if (this.venta != null) {
+            this.llenarDatosVenta(this.venta);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Venta no encontrada.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    private void llenarDatosVenta(Venta venta) {
+        this.fechaVentalbl.setText(new SimpleDateFormat("dd-MM-yyyy").format(venta.getFecha()));
+        this.clienteNom.setText(venta.getIdcliente().getNombre());
+        this.clienteTel.setText(venta.getIdcliente().getTelefono());
+        this.clienteDireccion.setText(venta.getIdcliente().getDireccion());
+
+        this.marcaTF.setText(venta.getIdvehiculo().getMarca());
+        this.nombreTF.setText(venta.getIdvehiculo().getNombre());
+        this.modeloTF.setText(venta.getIdvehiculo().getModelo());
+
+        this.notasTF.setText(venta.getNotas());
+
+        List<Relventaservicio> relVentaServicio = this.fachada.buscarTodasRelventaservicio();
+        List<Relventaservicio> listaVentaServicios = new ArrayList<>();
+
+        List<Relventapieza> relVentaPieza = this.fachada.buscarTodasRelventapieza();
+        List<Relventapieza> listaVentaPiezas = new ArrayList<>();
+
+        for (int i = 0; i < relVentaServicio.size(); i++) {
+            if (relVentaServicio.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
+                listaVentaServicios.add(relVentaServicio.get(i));
+            }
+        }
+        for (Relventaservicio listaVentaServicio : listaVentaServicios) {
+            this.listaServicios.add(listaVentaServicio.getIdservicio());
+        }
+
+        for (int i = 0; i < relVentaPieza.size(); i++) {
+            if (relVentaPieza.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
+                listaVentaPiezas.add(relVentaPieza.get(i));
+            }
+        }
+        for (Relventapieza listaVentaPieza : listaVentaPiezas) {
+            this.listaPiezas.add(listaVentaPieza.getIdpieza());
+        }
+
+        this.llenarTablaServicios();
+        this.llenarTablaPiezas();
+        this.totalVentaTF.setText(venta.getTotal() + "");
+    }
+
+    private void llenarTablaServicios() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConceptos.getModel();
+        modeloTabla.setRowCount(0);
+        for (Servicio servicio : this.listaServicios) {
+            Object[] fila = new Object[2];
+            fila[0] = servicio.getConcepto();
+            fila[1] = servicio.getCosto();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaServicios();
+    }
+
+    private void llenarTablaPiezas() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaPiezas.getModel();
+        modeloTabla.setRowCount(0);
+        for (Pieza pieza : this.listaPiezas) {
+            Object[] fila = new Object[3];
+            fila[0] = pieza.getNombre();
+            fila[1] = pieza.getCosto();
+            fila[2] = pieza.getCantidad();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaPiezas();
+    }
+
+    private void centrarDatosTablaServicios() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaConceptos.getColumnCount(); i++) {
+            this.tablaConceptos.setDefaultRenderer(this.tablaConceptos.getColumnClass(i), columna);
+        }
+    }
+
+    private void centrarDatosTablaPiezas() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaPiezas.getColumnCount(); i++) {
+            this.tablaPiezas.setDefaultRenderer(this.tablaPiezas.getColumnClass(i), columna);
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarServicio;
     private javax.swing.JButton btnBuscarVenta;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConsultarVenta;
     private javax.swing.JButton btnEditarVenta;
+    private javax.swing.JButton btnEliminarServicio;
     private javax.swing.JButton btnEliminarVenta;
     private javax.swing.JButton btnGenerar;
     private javax.swing.JButton btnRegistrarVenta;
@@ -522,7 +845,8 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -534,12 +858,14 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField marcaTF;
     private javax.swing.JTextField modeloTF;
     private javax.swing.JTextField nombreTF;
     private javax.swing.JTextPane notasTF;
     private javax.swing.JTable tablaConceptos;
+    private javax.swing.JTable tablaPiezas;
     private javax.swing.JTextField totalVentaTF;
     // End of variables declaration//GEN-END:variables
 }

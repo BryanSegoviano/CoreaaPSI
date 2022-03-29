@@ -134,52 +134,56 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(34, 34, 34)))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(costoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cantidadTF, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ConceptoTF)
-                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAgregar)
-                                .addGap(69, 69, 69)
-                                .addComponent(btnCancelar))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(checkboxPieza)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(41, 41, 41)
-                                .addComponent(cbPieza, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(27, 27, 27)
-                                .addComponent(jLabel6)
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnAgregar)
+                                .addGap(69, 69, 69)
+                                .addComponent(btnCancelar)))
+                        .addGap(31, 31, 31))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(existenciaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(31, 31, 31))))
+                                .addComponent(ConceptoTF))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addComponent(jLabel4)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(jLabel5)
+                                            .addGap(34, 34, 34)))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(costoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(cantidadTF, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 227, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addGap(41, 41, 41)
+                                    .addComponent(cbPieza, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(27, 27, 27)
+                                    .addComponent(jLabel6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(existenciaTF, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 13, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(13, 13, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(checkboxPieza)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(ConceptoTF, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(7, 7, 7)
-                .addComponent(checkboxPieza)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(cbPieza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -223,9 +227,7 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
             Pieza piezaNueva = (Pieza) this.cbPieza.getSelectedItem();
             piezaNueva.setCantidad(cantidad);
             piezaNueva.setCosto(costoConvertido);
-            this.setPieza(this.pieza);
-//            pieza.setCantidad(pieza.getCantidad() - cantidad);
-//            this.fachada.actualizarPieza(pieza);
+            this.setPieza(piezaNueva);
         } else {
             this.setServicio(new Servicio(new Date(), costoConvertido, concepto));
         }
@@ -238,12 +240,21 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
     private boolean validarCampos() {
         String concepto = this.ConceptoTF.getText();
         String costo = this.costoTF.getText();
-        if (concepto.equalsIgnoreCase("") || costo.equalsIgnoreCase("")) {
-            return false;
-        }
+        if (this.esPieza()) {
+            if (costo.equalsIgnoreCase("")) {
+                return false;
+            }
+            if (this.isNumericDouble(costo) == false) {
+                return false;
+            }
+        } else {
+            if (concepto.equalsIgnoreCase("") || costo.equalsIgnoreCase("")) {
+                return false;
+            }
 
-        if (this.isNumericDouble(costo) == false) {
-            return false;
+            if (this.isNumericDouble(costo) == false) {
+                return false;
+            }
         }
 
         return true;
@@ -271,33 +282,25 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
     }//GEN-LAST:event_checkboxPiezaActionPerformed
 
     private void costoTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_costoTFKeyReleased
-        String costo = costoTF.getText();
-        boolean isNumeric = costo.chars().allMatch(Character::isDigit);
-        if (!isNumeric) {
-            JOptionPane.showMessageDialog(this, "Debes singresar un numero",
-                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
-            this.costoTF.setText("");
-        } else {
 
-        }
     }//GEN-LAST:event_costoTFKeyReleased
 
     private void cantidadTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cantidadTFKeyReleased
         String cantidadSolicitada = cantidadTF.getText();
         boolean isNumeric = cantidadSolicitada.chars().allMatch(Character::isDigit);
         if (cantidadTF.getText().equals("")) {
-            
+
         }
         if (!isNumeric) {
-            JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+            JOptionPane.showMessageDialog(this, "Debe ingresar un numero",
                     "Advertencia", JOptionPane.INFORMATION_MESSAGE);
             this.cantidadTF.setText("");
         } else {
-            int cantidadSolicitadaInt=Integer.parseInt(cantidadSolicitada);
+            int cantidadSolicitadaInt = Integer.parseInt(cantidadSolicitada);
             if (cantidadSolicitadaInt > cantidadPieza) {
                 JOptionPane.showMessageDialog(this, "La cantidad solicitada es mayor a la que se tiene en existencia",
-                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
-            this.cantidadTF.setText("");
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.cantidadTF.setText("");
             }
         }
     }//GEN-LAST:event_cantidadTFKeyReleased
@@ -308,8 +311,10 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
             this.cbPieza.setEnabled(true);
             this.cantidadTF.setEnabled(true);
             this.costoTF.setEnabled(true);
+            this.ConceptoTF.setEnabled(false);
             return true;
         } else {
+            this.ConceptoTF.setEnabled(true);
             this.cbPieza.setEnabled(false);
             this.cantidadTF.setEnabled(false);
             this.costoTF.setEnabled(true);
