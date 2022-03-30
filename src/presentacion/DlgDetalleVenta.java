@@ -416,6 +416,10 @@ public class DlgDetalleVenta extends javax.swing.JDialog {
             }
         }
         for (Relventapieza listaVentaPieza : listaVentaPiezas) {
+            int cantidadNueva = Integer.parseInt(listaVentaPieza.getCantidad());
+            double costoNuevo = listaVentaPieza.getCosto();
+            listaVentaPieza.getIdpieza().setCantidad(cantidadNueva);
+            listaVentaPieza.getIdpieza().setCosto(costoNuevo);
             listaPiezas.add(listaVentaPieza.getIdpieza());
         }
         this.llenarTablaServicios(listaServicios);

@@ -5,12 +5,6 @@
  */
 package presentacion;
 
-import accesoDatos.ClienteJpaController;
-import accesoDatos.RelclientevehiculoJpaController;
-import accesoDatos.RelventaservicioJpaController;
-import accesoDatos.ServicioJpaController;
-import accesoDatos.VehiculoJpaController;
-import accesoDatos.VentaJpaController;
 import controles.Fachada;
 import controles.IFachada;
 import dominio.Cliente;
@@ -22,8 +16,6 @@ import dominio.Servicio;
 import dominio.Vehiculo;
 import dominio.Venta;
 import java.util.ArrayList;
-import java.util.Date;
-import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -297,9 +289,10 @@ public class DlgTotalServicio extends javax.swing.JDialog {
         for (int i = 0; i < this.listaPieza.size(); i++) {
             Pieza pieza = this.listaPieza.get(i);
             Pieza piezaBD = this.fachada.buscarPorIDPieza(pieza.getIdpieza());
+            int cantidadPieza = pieza.getCantidad();
             pieza.setCantidad(piezaBD.getCantidad() - pieza.getCantidad());
             this.fachada.actualizarPieza(pieza);
-            Relventapieza relVentaPieza = new Relventapieza(pieza.getCantidad() + "", pieza, venta);
+            Relventapieza relVentaPieza = new Relventapieza(cantidadPieza + "", pieza.getCosto(), pieza, venta);
             this.fachada.guardarRelventapieza(relVentaPieza);
         }
         this.dispose();

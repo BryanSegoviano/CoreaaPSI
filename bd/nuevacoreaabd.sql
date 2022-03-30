@@ -57,7 +57,7 @@ CREATE TABLE `clientes` (
   `nombre` varchar(45) NOT NULL,
   `telefono` varchar(45) NOT NULL,
   PRIMARY KEY (`idcliente`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -66,7 +66,7 @@ CREATE TABLE `clientes` (
 
 LOCK TABLES `clientes` WRITE;
 /*!40000 ALTER TABLE `clientes` DISABLE KEYS */;
-INSERT INTO `clientes` VALUES (33,'Villa ITSON','Benito Ramirez','644123');
+INSERT INTO `clientes` VALUES (33,'Villa ITSON','Benito Ramirez','644123'),(34,'Urbi Villa','Juan Marcos','64829103');
 /*!40000 ALTER TABLE `clientes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -168,7 +168,7 @@ CREATE TABLE `piezas` (
 
 LOCK TABLES `piezas` WRITE;
 /*!40000 ALTER TABLE `piezas` DISABLE KEYS */;
-INSERT INTO `piezas` VALUES (12,'bujes',12,15,NULL),(13,'biela',32,10,NULL),(14,'clutch',500,2,NULL),(15,'puerta',1000,0,NULL);
+INSERT INTO `piezas` VALUES (12,'bujes',42,11,NULL),(13,'biela',15,1,NULL),(14,'clutch',15,-20,NULL),(15,'puerta',56,7,NULL);
 /*!40000 ALTER TABLE `piezas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,7 +217,7 @@ CREATE TABLE `relclientevehiculo` (
   KEY `FK_relclientevehiculo_idvehiculo` (`idvehiculo`) /*!80000 INVISIBLE */,
   CONSTRAINT `FK_relclientevehiculo_idcliente` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
   CONSTRAINT `FK_relclientevehiculo_idvehiculo` FOREIGN KEY (`idvehiculo`) REFERENCES `vehiculos` (`idvehiculo`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -226,7 +226,7 @@ CREATE TABLE `relclientevehiculo` (
 
 LOCK TABLES `relclientevehiculo` WRITE;
 /*!40000 ALTER TABLE `relclientevehiculo` DISABLE KEYS */;
-INSERT INTO `relclientevehiculo` VALUES (23,33,25);
+INSERT INTO `relclientevehiculo` VALUES (23,33,25),(24,34,26);
 /*!40000 ALTER TABLE `relclientevehiculo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -242,12 +242,13 @@ CREATE TABLE `relventapieza` (
   `cantidad` varchar(45) NOT NULL,
   `idventa` int NOT NULL,
   `idpieza` int NOT NULL,
+  `costo` double NOT NULL,
   PRIMARY KEY (`idrelventapieza`),
   KEY `FK_relventapieza_idventa` (`idventa`),
   KEY `FK_relventapieza_idpieza` (`idpieza`),
   CONSTRAINT `FK_relventapieza_idpieza` FOREIGN KEY (`idpieza`) REFERENCES `piezas` (`idpieza`),
   CONSTRAINT `FK_relventapieza_idventa` FOREIGN KEY (`idventa`) REFERENCES `ventas` (`idventa`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=107 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -256,7 +257,7 @@ CREATE TABLE `relventapieza` (
 
 LOCK TABLES `relventapieza` WRITE;
 /*!40000 ALTER TABLE `relventapieza` DISABLE KEYS */;
-INSERT INTO `relventapieza` VALUES (10,'8',26,12),(11,'5',27,12),(12,'3',29,12),(25,'10',30,13);
+INSERT INTO `relventapieza` VALUES (106,'5',48,14,61);
 /*!40000 ALTER TABLE `relventapieza` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -276,7 +277,7 @@ CREATE TABLE `relventaservicio` (
   KEY `FK_relventasservicio_idservicio` (`idservicio`) /*!80000 INVISIBLE */,
   CONSTRAINT `FK_relventasservicio_idservicio` FOREIGN KEY (`idservicio`) REFERENCES `servicios` (`idservicio`),
   CONSTRAINT `FK_relventasservicio_idventa` FOREIGN KEY (`idventa`) REFERENCES `ventas` (`idventa`)
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -285,7 +286,7 @@ CREATE TABLE `relventaservicio` (
 
 LOCK TABLES `relventaservicio` WRITE;
 /*!40000 ALTER TABLE `relventaservicio` DISABLE KEYS */;
-INSERT INTO `relventaservicio` VALUES (49,26,57),(50,27,58),(53,29,61),(67,30,78),(68,30,79);
+INSERT INTO `relventaservicio` VALUES (173,48,184);
 /*!40000 ALTER TABLE `relventaservicio` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,7 +304,7 @@ CREATE TABLE `servicios` (
   `concepto` varchar(150) NOT NULL,
   `proximo_servicio` date DEFAULT NULL,
   PRIMARY KEY (`idservicio`)
-) ENGINE=InnoDB AUTO_INCREMENT=80 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,7 +313,7 @@ CREATE TABLE `servicios` (
 
 LOCK TABLES `servicios` WRITE;
 /*!40000 ALTER TABLE `servicios` DISABLE KEYS */;
-INSERT INTO `servicios` VALUES (57,'2022-03-23',23,'servicio9',NULL),(58,'2022-03-23',23,'se1',NULL),(61,'2022-03-27',100,'cambio de aceite',NULL),(78,'2022-03-29',34,'servicio1',NULL),(79,'2022-03-29',44,'servicio2',NULL);
+INSERT INTO `servicios` VALUES (184,'2022-03-30',100,'serv3',NULL);
 /*!40000 ALTER TABLE `servicios` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -329,7 +330,7 @@ CREATE TABLE `vehiculos` (
   `nombre` varchar(45) NOT NULL,
   `marca` varchar(45) NOT NULL,
   PRIMARY KEY (`idvehiculo`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -338,7 +339,7 @@ CREATE TABLE `vehiculos` (
 
 LOCK TABLES `vehiculos` WRITE;
 /*!40000 ALTER TABLE `vehiculos` DISABLE KEYS */;
-INSERT INTO `vehiculos` VALUES (25,'2021','A4','Audi');
+INSERT INTO `vehiculos` VALUES (25,'2021','A4','Audi'),(26,'2011','Ranger','Ford');
 /*!40000 ALTER TABLE `vehiculos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -362,7 +363,7 @@ CREATE TABLE `ventas` (
   KEY `Fk_ventas_vehiculo_idx` (`idvehiculo`),
   CONSTRAINT `Fk_ventas_cliente` FOREIGN KEY (`idcliente`) REFERENCES `clientes` (`idcliente`),
   CONSTRAINT `Fk_ventas_vehiculo` FOREIGN KEY (`idvehiculo`) REFERENCES `vehiculos` (`idvehiculo`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -371,7 +372,7 @@ CREATE TABLE `ventas` (
 
 LOCK TABLES `ventas` WRITE;
 /*!40000 ALTER TABLE `ventas` DISABLE KEYS */;
-INSERT INTO `ventas` VALUES (26,'2022-03-23',33,23,'',25,'123'),(27,'2022-03-23',33,45,'',25,'123'),(29,'2022-03-27',33,150,'bujes con aceite',25,'123'),(30,'2022-03-27',33,110,'nuea',25,'123');
+INSERT INTO `ventas` VALUES (48,'2022-03-30',34,161,'nuevas',26,'123');
 /*!40000 ALTER TABLE `ventas` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -384,4 +385,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-29 13:57:29
+-- Dump completed on 2022-03-30 12:51:58

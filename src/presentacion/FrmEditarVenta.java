@@ -5,28 +5,16 @@
  */
 package presentacion;
 
-import accesoDatos.ClienteJpaController;
-import accesoDatos.RelclientevehiculoJpaController;
-import accesoDatos.RelventaservicioJpaController;
-import accesoDatos.ServicioJpaController;
-import accesoDatos.VehiculoJpaController;
-import accesoDatos.VentaJpaController;
-import controles.ControlServicio;
 import controles.Fachada;
 import controles.IFachada;
-import dominio.Cliente;
 import dominio.Pieza;
-import dominio.Relclientevehiculo;
 import dominio.Relventapieza;
 import dominio.Relventaservicio;
 import dominio.Servicio;
-import dominio.Vehiculo;
 import dominio.Venta;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -554,51 +542,52 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         //actualizar nuevos servicios con ventas
         List<Relventaservicio> listVentaServicio = this.fachada.buscarTodasRelventaservicio();
         for (int i = 0; i < listVentaServicio.size(); i++) {
-            if (this.venta.getIdventa() == listVentaServicio.get(i).getIdventa().getIdventa()) {
+            int idVenta = this.venta.getIdventa();
+            int idListaVenta = listVentaServicio.get(i).getIdventa().getIdventa();
+            if (idVenta == idListaVenta) {
                 this.fachada.eliminarRelventaservicio(listVentaServicio.get(i).getIdrelVentaServicio());
                 this.fachada.eliminarServicio(listVentaServicio.get(i).getIdservicio().getIdservicio());
             }
         }
 
         for (int i = 0; i < this.listaServicios.size(); i++) {
-            this.listaServicios.get(i).setIdservicio(null);
-            this.fachada.guardarServicio(this.listaServicios.get(i));
-        }
-
-        for (int i = 0; i < this.listaServicios.size(); i++) {
-            Servicio servicio = this.listaServicios.get(i);
+            Servicio servicio = new Servicio(this.listaServicios.get(i).getFecha(),
+                    this.listaServicios.get(i).getCosto(),
+                    this.listaServicios.get(i).getConcepto());
+            this.fachada.guardarServicio(servicio);
             Relventaservicio relVentaServicio = new Relventaservicio(servicio, this.venta);
             this.fachada.guardarRelventaservicio(relVentaServicio);
         }
-
 /////////////////////////////////////////////////////////////////////
-        //actualizar nuevas piezas con ventas
+//actualizar nuevas piezas con ventas
         List<Relventapieza> listVentaPieza = this.fachada.buscarTodasRelventapieza();
-        
+//
         for (int i = 0; i < listVentaPieza.size(); i++) {
             if (this.venta.getIdventa() == listVentaPieza.get(i).getIdventa().getIdventa()) {
                 this.fachada.eliminarRelventapieza(listVentaPieza.get(i).getIdrelventapieza());
                 //no se elimina la pieza, se suma la cantidad que se desocupo al quitarlo de la lista
             }
         }
-        
+//        //sumar las piezas eliminadas
 //        for (int i = 0; i < this.listaPiezas.size(); i++) {
 //            Pieza pieza = this.listaPiezas.get(i);
 //            Pieza piezaBD = this.fachada.buscarPorIDPieza(pieza.getIdpieza());
 //            int piezaBDCantidad = piezaBD.getCantidad();
 //            int piezaCantidad = pieza.getCantidad();
-//            pieza.setCantidad(piezaBDCantidad + piezaCantidad);
-//            this.fachada.actualizarPieza(pieza);
+//            piezaBD.setCantidad(piezaBDCantidad + piezaCantidad);
+//            this.fachada.actualizarPieza(piezaBD);
 //        }
-
+        //restar las piezas usadas
         for (int i = 0; i < this.listaPiezas.size(); i++) {
-            Pieza pieza = this.listaPiezas.get(i);
-            Pieza piezaBD = this.fachada.buscarPorIDPieza(pieza.getIdpieza());
+            Pieza pieza = new Pieza(this.listaPiezas.get(i).getNombre(),
+                    this.listaPiezas.get(i).getCosto(),
+                    this.listaPiezas.get(i).getCantidad());
+            Pieza piezaBD = this.fachada.buscarPorIDPieza(this.listaPiezas.get(i).getIdpieza());
             int piezaBDCantidad = piezaBD.getCantidad();
             int piezaCantidad = pieza.getCantidad();
-            pieza.setCantidad(piezaBDCantidad - piezaCantidad);
-            this.fachada.actualizarPieza(pieza);
-            Relventapieza relVentaPieza = new Relventapieza(pieza.getCantidad() + "", pieza, this.venta);
+            piezaBD.setCantidad(piezaBDCantidad - piezaCantidad);
+            this.fachada.actualizarPieza(piezaBD);
+            Relventapieza relVentaPieza = new Relventapieza(piezaCantidad + "", pieza.getCosto(), piezaBD, this.venta);
             this.fachada.guardarRelventapieza(relVentaPieza);
         }
 /////////////////////////////////////////////////////////////
@@ -773,6 +762,10 @@ public class FrmEditarVenta extends javax.swing.JFrame {
             }
         }
         for (Relventapieza listaVentaPieza : listaVentaPiezas) {
+            int cantidadNueva = Integer.parseInt(listaVentaPieza.getCantidad());
+            double costoNuevo = listaVentaPieza.getCosto();
+            listaVentaPieza.getIdpieza().setCantidad(cantidadNueva);
+            listaVentaPieza.getIdpieza().setCosto(costoNuevo);
             this.listaPiezas.add(listaVentaPieza.getIdpieza());
         }
 

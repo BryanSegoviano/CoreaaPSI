@@ -549,6 +549,8 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
         this.totalVentaTF.setText("");
         ArrayList<Servicio> listaServicios = new ArrayList<>();
         this.llenarTablaServicios(listaServicios);
+        ArrayList<Pieza> listaPieza = new ArrayList<>();
+        this.llenarTablaPiezas(listaPieza);
     }
 
     private void eliminarVenta(int idVenta) {
@@ -561,6 +563,20 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
             if (ListaRelVentaServicio.get(i).getIdventa().getIdventa() == venta.getIdventa()) {
                 listaServicios.add(this.fachada.buscarPorIDServicio(ListaRelVentaServicio.get(i).getIdservicio().getIdservicio()));
                 this.fachada.eliminarRelventaservicio(ListaRelVentaServicio.get(i).getIdrelVentaServicio());
+            }
+        }
+
+        List<Relventapieza> listaRelVentaPieza = this.fachada.buscarTodasRelventapieza();
+        for (int i = 0; i < listaRelVentaPieza.size(); i++) {
+            Relventapieza relpieza = listaRelVentaPieza.get(i);
+            int idventapieza = relpieza.getIdventa().getIdventa();
+            if (idventapieza == idVenta) {
+                Pieza pieza = this.fachada.buscarPorIDPieza(relpieza.getIdpieza().getIdpieza());
+                int cantidadTotal = pieza.getCantidad();
+                int cantidadSumar = Integer.parseInt(relpieza.getCantidad());
+                pieza.setCantidad(cantidadTotal + cantidadSumar);
+                this.fachada.actualizarPieza(pieza);
+                this.fachada.eliminarRelventapieza(relpieza.getIdrelventapieza());
             }
         }
 
@@ -621,6 +637,10 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
             }
         }
         for (Relventapieza listaVentaPieza : listaVentaPiezas) {
+            int cantidadNueva = Integer.parseInt(listaVentaPieza.getCantidad());
+            double costoNuevo = listaVentaPieza.getCosto();
+            listaVentaPieza.getIdpieza().setCantidad(cantidadNueva);
+            listaVentaPieza.getIdpieza().setCosto(costoNuevo);
             listaPiezas.add(listaVentaPieza.getIdpieza());
         }
 

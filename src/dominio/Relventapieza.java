@@ -29,7 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Relventapieza.findAll", query = "SELECT r FROM Relventapieza r"),
     @NamedQuery(name = "Relventapieza.findByIdrelventapieza", query = "SELECT r FROM Relventapieza r WHERE r.idrelventapieza = :idrelventapieza"),
-    @NamedQuery(name = "Relventapieza.findByCantidad", query = "SELECT r FROM Relventapieza r WHERE r.cantidad = :cantidad")})
+    @NamedQuery(name = "Relventapieza.findByCantidad", query = "SELECT r FROM Relventapieza r WHERE r.cantidad = :cantidad"),
+    @NamedQuery(name = "Relventapieza.findByCosto", query = "SELECT r FROM Relventapieza r WHERE r.costo = :costo")})
 public class Relventapieza implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -41,6 +42,9 @@ public class Relventapieza implements Serializable {
     @Basic(optional = false)
     @Column(name = "cantidad")
     private String cantidad;
+    @Basic(optional = false)
+    @Column(name = "costo")
+    private double costo;
     @JoinColumn(name = "idpieza", referencedColumnName = "idpieza")
     @ManyToOne(optional = false)
     private Pieza idpieza;
@@ -55,15 +59,27 @@ public class Relventapieza implements Serializable {
         this.idrelventapieza = idrelventapieza;
     }
 
-    public Relventapieza(Integer idrelventapieza, String cantidad) {
+    public Relventapieza(Integer idrelventapieza, String cantidad, double costo, Pieza idpieza, Venta idventa) {
         this.idrelventapieza = idrelventapieza;
         this.cantidad = cantidad;
-    }
-
-    public Relventapieza(String cantidad, Pieza idpieza, Venta idventa) {
-        this.cantidad = cantidad;
+        this.costo = costo;
         this.idpieza = idpieza;
         this.idventa = idventa;
+    }
+
+    public Relventapieza(String cantidad, double costo, Pieza idpieza, Venta idventa) {
+        this.cantidad = cantidad;
+        this.costo = costo;
+        this.idpieza = idpieza;
+        this.idventa = idventa;
+    }
+
+    
+    
+    public Relventapieza(Integer idrelventapieza, String cantidad, double costo) {
+        this.idrelventapieza = idrelventapieza;
+        this.cantidad = cantidad;
+        this.costo = costo;
     }
 
     public Integer getIdrelventapieza() {
@@ -80,6 +96,14 @@ public class Relventapieza implements Serializable {
 
     public void setCantidad(String cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public double getCosto() {
+        return costo;
+    }
+
+    public void setCosto(double costo) {
+        this.costo = costo;
     }
 
     public Pieza getIdpieza() {
