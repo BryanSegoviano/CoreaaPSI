@@ -58,6 +58,7 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
         existenciaTF = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         checkboxPieza = new javax.swing.JCheckBox();
+        checkBoxPiezaNueva = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Detalles del servicio");
@@ -80,6 +81,11 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
         jLabel4.setText("Cantidad:");
 
         cantidadTF.setEnabled(false);
+        cantidadTF.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cantidadTFActionPerformed(evt);
+            }
+        });
         cantidadTF.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 cantidadTFKeyReleased(evt);
@@ -127,6 +133,14 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
             }
         });
 
+        checkBoxPiezaNueva.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        checkBoxPiezaNueva.setText("¿Es pieza nueva?");
+        checkBoxPiezaNueva.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                checkBoxPiezaNuevaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -138,6 +152,8 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(checkboxPieza)
+                                .addGap(60, 60, 60)
+                                .addComponent(checkBoxPiezaNueva)
                                 .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -178,7 +194,9 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(checkboxPieza)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(checkboxPieza)
+                    .addComponent(checkBoxPiezaNueva))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -222,15 +240,18 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
         String concepto = this.ConceptoTF.getText();
         String costo = this.costoTF.getText();
         Double costoConvertido = Double.parseDouble(costo);
-        if (this.esPieza()) {
+        if (this.esPiezaNueva() || !this.esPieza()) {
+            this.setServicio(new Servicio(new Date(), costoConvertido, concepto));
+
+        } else {
             int cantidad = Integer.parseInt(this.cantidadTF.getText());
             Pieza piezaNueva = (Pieza) this.cbPieza.getSelectedItem();
             piezaNueva.setCantidad(cantidad);
             piezaNueva.setCosto(costoConvertido);
             this.setPieza(piezaNueva);
-        } else {
-            this.setServicio(new Servicio(new Date(), costoConvertido, concepto));
+
         }
+
         this.ConceptoTF.setText("");
         this.costoTF.setText("");
         this.dispose();
@@ -288,36 +309,61 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
     private void cantidadTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cantidadTFKeyReleased
         String cantidadSolicitada = cantidadTF.getText();
         boolean isNumeric = cantidadSolicitada.chars().allMatch(Character::isDigit);
-        if (cantidadTF.getText().equals("")) {
-
-        }
-        if (!isNumeric) {
-            JOptionPane.showMessageDialog(this, "Debe ingresar un numero",
-                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
-            this.cantidadTF.setText("");
-        } else {
-            int cantidadSolicitadaInt = Integer.parseInt(cantidadSolicitada);
-            if (cantidadSolicitadaInt > cantidadPieza) {
-                JOptionPane.showMessageDialog(this, "La cantidad solicitada es mayor a la que se tiene en existencia",
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debe ingresar un numero",
                         "Advertencia", JOptionPane.INFORMATION_MESSAGE);
                 this.cantidadTF.setText("");
+            } else {
+                int cantidadSolicitadaInt = Integer.parseInt(cantidadSolicitada);
+                if (cantidadSolicitadaInt > cantidadPieza) {
+                    JOptionPane.showMessageDialog(this, "La cantidad solicitada es mayor a la que se tiene en existencia",
+                            "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                    this.cantidadTF.setText("");
+                }
             }
+        } catch (Exception e) {
         }
+
     }//GEN-LAST:event_cantidadTFKeyReleased
+
+    private void checkBoxPiezaNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkBoxPiezaNuevaActionPerformed
+        esPiezaNueva();
+    }//GEN-LAST:event_checkBoxPiezaNuevaActionPerformed
+
+    private void cantidadTFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cantidadTFActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cantidadTFActionPerformed
 
     public boolean esPieza() {
         boolean esPieza = checkboxPieza.isSelected();
         if (esPieza) {
+            this.ConceptoTF.setEnabled(false);
             this.cbPieza.setEnabled(true);
             this.cantidadTF.setEnabled(true);
-            this.costoTF.setEnabled(true);
-            this.ConceptoTF.setEnabled(false);
+            this.checkBoxPiezaNueva.setEnabled(true);
             return true;
         } else {
             this.ConceptoTF.setEnabled(true);
             this.cbPieza.setEnabled(false);
             this.cantidadTF.setEnabled(false);
             this.costoTF.setEnabled(true);
+            this.checkBoxPiezaNueva.setEnabled(false);
+            return false;
+        }
+    }
+
+    public boolean esPiezaNueva() {
+        boolean esPiezaInventario = checkBoxPiezaNueva.isSelected();
+        if (esPiezaInventario) {
+            this.cantidadTF.setEnabled(true);
+            this.costoTF.setEnabled(true);
+            this.ConceptoTF.setEnabled(true);
+            this.cbPieza.setEnabled(false);
+            return true;
+        } else {
+            this.ConceptoTF.setEnabled(false);
+            this.cbPieza.setEnabled(true);
             return false;
         }
     }
@@ -359,6 +405,7 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JTextField cantidadTF;
     private javax.swing.JComboBox<Pieza> cbPieza;
+    private javax.swing.JCheckBox checkBoxPiezaNueva;
     private javax.swing.JCheckBox checkboxPieza;
     private javax.swing.JTextField costoTF;
     private javax.swing.JTextField existenciaTF;

@@ -242,7 +242,23 @@ public class DlgTotalServicio extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
-        this.agregarVenta();
+        float pago = Float.valueOf(this.pagoTF.getText());
+        float total = Float.valueOf(this.totalTF.getText());
+        try {
+
+            if (pago >= total) {
+                this.agregarVenta();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "El valor del pago debe ser mayor al costo total",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ups, ha ocurrido un error de conexión, intente más tarde",
+                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+            this.pagoTF.setText("");
+        }
     }//GEN-LAST:event_btnPagarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -252,17 +268,22 @@ public class DlgTotalServicio extends javax.swing.JDialog {
     private void pagoTFKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pagoTFKeyReleased
         String pago = pagoTF.getText();
         boolean isNumeric = pago.chars().allMatch(Character::isDigit);
-        if (!isNumeric) {
-            JOptionPane.showMessageDialog(this, "Debes singresar un numero",
-                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
-            this.pagoTF.setText("");
-        } else {
-            double pagoInt = Double.parseDouble(pago);
-            double totalInt = Double.parseDouble(this.totalTF.getText());
-            double cambio = pagoInt - totalInt;
-            String cambioStr = String.valueOf(cambio);
-            cambioTF.setText(cambioStr);
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.pagoTF.setText("");
+            } else {
+                double pagoInt = Double.parseDouble(pago);
+                double totalInt = Double.parseDouble(this.totalTF.getText());
+                double cambio = pagoInt - totalInt;
+                String cambioStr = String.valueOf(cambio);
+                cambioTF.setText(cambioStr);
+
+            }
+        } catch (Exception e) {
         }
+
     }//GEN-LAST:event_pagoTFKeyReleased
     private void agregarVenta() {
         Cliente clienteFinal = this.venta.getIdcliente();
