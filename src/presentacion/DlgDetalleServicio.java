@@ -277,7 +277,10 @@ public class DlgDetalleServicio extends javax.swing.JDialog {
                 return false;
             }
         }
-
+        if(Double.parseDouble(costo) <= 0){
+            return false;
+        }
+        
         return true;
     }
 

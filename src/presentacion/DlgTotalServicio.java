@@ -242,22 +242,24 @@ public class DlgTotalServicio extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
-        float pago = Float.valueOf(this.pagoTF.getText());
-        float total = Float.valueOf(this.totalTF.getText());
-        try {
+        if (!this.pagoTF.getText().isEmpty()) {
+            float pago = Float.valueOf(this.pagoTF.getText());
+            float total = Float.valueOf(this.totalTF.getText());
+            try {
 
-            if (pago >= total) {
-                this.agregarVenta();
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "El valor del pago debe ser mayor al costo total",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE);
+                if (pago >= total) {
+                    this.agregarVenta();
+                } else {
+                    JOptionPane.showMessageDialog(this,
+                            "El valor del pago debe ser mayor al costo total",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Ups, ha ocurrido un error de conexión, intente más tarde",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.pagoTF.setText("");
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Ups, ha ocurrido un error de conexión, intente más tarde",
-                    "Advertencia", JOptionPane.INFORMATION_MESSAGE);
-            this.pagoTF.setText("");
         }
     }//GEN-LAST:event_btnPagarActionPerformed
 

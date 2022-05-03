@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/Descargar%20Disco%20D/nueva%20version/CoreaaPSI/src/dominio/Servicio.java</file>
-            <file>file:/D:/Descargar%20Disco%20D/nueva%20version/CoreaaPSI/src/dominio/Relventaservicio.java</file>
-            <file>file:/D:/Descargar%20Disco%20D/nueva%20version/CoreaaPSI/src/presentacion/FrmEditarVenta.java</file>
+            <file>file:/D:/Descargar%20Disco%20D/proy%20integrador/CoreaaPSI/src/presentacion/FrmRegistrarVenta.java</file>
+            <file>file:/D:/Descargar%20Disco%20D/proy%20integrador/CoreaaPSI/src/dominio/Servicio.java</file>
+            <file>file:/D:/Descargar%20Disco%20D/proy%20integrador/CoreaaPSI/src/presentacion/DlgDetalleServicio.java</file>
+            <file>file:/D:/Descargar%20Disco%20D/proy%20integrador/CoreaaPSI/src/presentacion/DlgTotalServicio.java</file>
         </group>
     </open-files>
 </project-private>
