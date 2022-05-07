@@ -148,7 +148,7 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return "dominio.Cliente[ idcliente=" + idcliente + " ]";
+        return "Cliente{" + "idcliente=" + idcliente + ", direccion=" + direccion + ", nombre=" + nombre + ", telefono=" + telefono + '}';
     }
     
 }

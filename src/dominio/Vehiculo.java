@@ -138,11 +138,6 @@ public class Vehiculo implements Serializable {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "dominio.Vehiculo[ idvehiculo=" + idvehiculo + " ]";
-    }
-
     @XmlTransient
     public List<Venta> getVentaList() {
         return ventaList;
@@ -150,6 +145,11 @@ public class Vehiculo implements Serializable {
 
     public void setVentaList(List<Venta> ventaList) {
         this.ventaList = ventaList;
+    }
+
+    @Override
+    public String toString() {
+        return "Vehiculo{" + "idvehiculo=" + idvehiculo + ", modelo=" + modelo + ", nombre=" + nombre + ", marca=" + marca + '}';
     }
     
 }
