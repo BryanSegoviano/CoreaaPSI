@@ -40,7 +40,6 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     private void initComponents() {
 
         btnRegistrarVehiculo = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
         btnEditarVehiculo = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -58,6 +57,7 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
         btnConsultarVehiculo = new javax.swing.JButton();
+        btnCerrarSesion2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuAdmClientes = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -71,15 +71,6 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         btnRegistrarVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegistrarVehiculoActionPerformed(evt);
-            }
-        });
-
-        btnCancelar.setBackground(new java.awt.Color(255, 0, 0));
-        btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnCancelar.setText("Salir");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
             }
         });
 
@@ -126,6 +117,11 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         txtMarcaVehiculo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         txtModeloVehiculo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtModeloVehiculo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtModeloVehiculoKeyReleased(evt);
+            }
+        });
 
         jLabel7.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel7.setText("¿A que cliente le pertenece?");
@@ -231,6 +227,15 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
             }
         });
 
+        btnCerrarSesion2.setBackground(new java.awt.Color(255, 0, 0));
+        btnCerrarSesion2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnCerrarSesion2.setText("Cerrar Sesion");
+        btnCerrarSesion2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesion2ActionPerformed(evt);
+            }
+        });
+
         menuAdmClientes.setText("Administrar Clientes");
         menuAdmClientes.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -263,13 +268,13 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addComponent(btnRegistrarVehiculo))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(50, 50, 50)
-                        .addComponent(btnCancelar))
-                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(btnEditarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnConsultarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(btnConsultarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addComponent(btnCerrarSesion2)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -284,8 +289,8 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(btnConsultarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCancelar)
-                .addGap(33, 33, 33))
+                .addComponent(btnCerrarSesion2)
+                .addGap(23, 23, 23))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -298,10 +303,6 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     private void btnRegistrarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarVehiculoActionPerformed
 
     }//GEN-LAST:event_btnRegistrarVehiculoActionPerformed
-
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-
-    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnEditarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarVehiculoActionPerformed
         FrmEditarVehiculo frmEditarVehiculo = new FrmEditarVehiculo();
@@ -331,6 +332,29 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnConsultarVehiculoActionPerformed
 
+    private void txtModeloVehiculoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtModeloVehiculoKeyReleased
+        String id = txtModeloVehiculo.getText();
+        boolean isNumeric = id.chars().allMatch(Character::isDigit);
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.txtModeloVehiculo.setText("");
+            } else {
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_txtModeloVehiculoKeyReleased
+
+    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        if (respuesta == 0) {
+            FrmInicioSesion inicioSesion = new FrmInicioSesion();
+            inicioSesion.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
+
     private void registrarVehiculo() {
         int renglonElegido = this.tablaClientes.getSelectedRow();
 
@@ -341,7 +365,7 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
             String nombre = this.txtVehiculoNombre.getText();
             String marca = this.txtMarcaVehiculo.getText();
             String modelo = this.txtModeloVehiculo.getText();
-            Vehiculo vehiculo = new Vehiculo(nombre, marca, modelo);
+            Vehiculo vehiculo = new Vehiculo(modelo, nombre, marca);
             this.fachada.guardarVehiculo(vehiculo);
 
             Integer idCliente = (Integer) this.tablaClientes.getValueAt(renglonElegido, 0);
@@ -420,7 +444,7 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCerrarSesion2;
     private javax.swing.JButton btnConsultarVehiculo;
     private javax.swing.JButton btnEditarVehiculo;
     private javax.swing.JButton btnGuardarVehiculo;

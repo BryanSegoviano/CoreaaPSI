@@ -6,6 +6,7 @@ import dominio.Cliente;
 import dominio.Relclientevehiculo;
 import dominio.Vehiculo;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
@@ -47,10 +48,10 @@ public class FrmEditarCliente extends javax.swing.JFrame {
         tablaVehiculos = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
-        btnCancelar = new javax.swing.JButton();
         btnRegistrarCliente = new javax.swing.JButton();
         btnEditarCliente = new javax.swing.JButton();
         btnConsultarCliente = new javax.swing.JButton();
+        btnCerrarSesion2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuAdmVehiculos = new javax.swing.JMenu();
@@ -78,6 +79,11 @@ public class FrmEditarCliente extends javax.swing.JFrame {
         clienteNom.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         clienteTel.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        clienteTel.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                clienteTelKeyReleased(evt);
+            }
+        });
 
         clienteDireccion.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
@@ -87,6 +93,12 @@ public class FrmEditarCliente extends javax.swing.JFrame {
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGuardarActionPerformed(evt);
+            }
+        });
+
+        txtIdCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtIdClienteKeyReleased(evt);
             }
         });
 
@@ -236,15 +248,6 @@ public class FrmEditarCliente extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        btnCancelar.setBackground(new java.awt.Color(255, 0, 0));
-        btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnCancelar.setText("Salir");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
-            }
-        });
-
         btnRegistrarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnRegistrarCliente.setText("Registrar Cliente");
         btnRegistrarCliente.addActionListener(new java.awt.event.ActionListener() {
@@ -268,6 +271,15 @@ public class FrmEditarCliente extends javax.swing.JFrame {
         btnConsultarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConsultarClienteActionPerformed(evt);
+            }
+        });
+
+        btnCerrarSesion2.setBackground(new java.awt.Color(255, 0, 0));
+        btnCerrarSesion2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnCerrarSesion2.setText("Cerrar Sesion");
+        btnCerrarSesion2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesion2ActionPerformed(evt);
             }
         });
 
@@ -310,10 +322,10 @@ public class FrmEditarCliente extends javax.swing.JFrame {
                                     .addComponent(btnEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnConsultarCliente, javax.swing.GroupLayout.Alignment.TRAILING))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(45, 45, 45)
-                        .addComponent(btnCancelar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCerrarSesion2)
+                        .addGap(18, 18, 18)))
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20))
         );
@@ -328,9 +340,9 @@ public class FrmEditarCliente extends javax.swing.JFrame {
                         .addComponent(btnEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
                         .addComponent(btnConsultarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(125, 125, 125)
-                        .addComponent(btnCancelar)
-                        .addGap(15, 15, 15))
+                        .addGap(131, 131, 131)
+                        .addComponent(btnCerrarSesion2)
+                        .addGap(9, 9, 9))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -345,11 +357,16 @@ public class FrmEditarCliente extends javax.swing.JFrame {
     private void editarCliente() {
         int idCliente = Integer.parseInt(this.txtIdCliente.getText());
         try {
+
             Cliente cliente = this.fachada.buscarPorIDCliente(idCliente);
             cliente.setNombre(this.clienteNom.getText());
             cliente.setDireccion(this.clienteDireccion.getText());
             cliente.setTelefono(this.clienteTel.getText());
             this.fachada.actualizarCliente(cliente);
+            JOptionPane.showMessageDialog(this, "Vehiculo editado exitósamente",
+                    "", JOptionPane.INFORMATION_MESSAGE);
+            DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaVehiculos.getModel();
+            modeloTabla.setRowCount(0);
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -363,10 +380,17 @@ public class FrmEditarCliente extends javax.swing.JFrame {
     private void buscarClienteId(int idCliente) {
         try {
             Cliente cliente = this.fachada.buscarPorIDCliente(idCliente);
-            this.clienteNom.setText(cliente.getNombre());
-            this.clienteDireccion.setText(cliente.getDireccion());
-            this.clienteTel.setText(cliente.getTelefono());
-            this.llenarTablaVehiculos(idCliente);
+            if (cliente != null) {
+                this.clienteNom.setText(cliente.getNombre());
+                this.clienteDireccion.setText(cliente.getDireccion());
+                this.clienteTel.setText(cliente.getTelefono());
+                this.llenarTablaVehiculos(idCliente);
+            } else {
+                JOptionPane.showMessageDialog(this, "Cliente no encontrado",
+                        "Advertencia", JOptionPane.ERROR_MESSAGE);
+                this.txtIdCliente.setText("");
+            }
+
         } catch (Exception ex) {
             System.out.println(ex);
         }
@@ -398,10 +422,6 @@ public class FrmEditarCliente extends javax.swing.JFrame {
         }
     }
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-
-    }//GEN-LAST:event_btnCancelarActionPerformed
-
     private void btnRegistrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarClienteActionPerformed
         FrmRegistrarCliente frmRegCLiente = new FrmRegistrarCliente();
         frmRegCLiente.setVisible(true);
@@ -429,6 +449,43 @@ public class FrmEditarCliente extends javax.swing.JFrame {
         frmconsulta.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnConsultarClienteActionPerformed
+
+    private void txtIdClienteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIdClienteKeyReleased
+        String telefono = txtIdCliente.getText();
+        boolean isNumeric = telefono.chars().allMatch(Character::isDigit);
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.txtIdCliente.setText("");
+            } else {
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_txtIdClienteKeyReleased
+
+    private void clienteTelKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_clienteTelKeyReleased
+        String telefono = clienteTel.getText();
+        boolean isNumeric = telefono.chars().allMatch(Character::isDigit);
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.clienteTel.setText("");
+            } else {
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_clienteTelKeyReleased
+
+    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        if (respuesta == 0) {
+            FrmInicioSesion inicioSesion = new FrmInicioSesion();
+            inicioSesion.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -465,7 +522,7 @@ public class FrmEditarCliente extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarVenta;
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCerrarSesion2;
     private javax.swing.JButton btnConsultarCliente;
     private javax.swing.JButton btnEditarCliente;
     private javax.swing.JButton btnGuardar;

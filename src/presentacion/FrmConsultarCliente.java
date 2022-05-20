@@ -5,18 +5,29 @@
  */
 package presentacion;
 
+import com.sun.org.apache.bcel.internal.generic.AALOAD;
+import controles.Fachada;
+import controles.IFachada;
+import dominio.Cliente;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author l3tal
  */
 public class FrmConsultarCliente extends javax.swing.JFrame {
 
-    /**
-     * Creates new form FrmConsultarCliente
-     */
+    public Cliente clienteRegistrado;
+    private IFachada fachada;
+
     public FrmConsultarCliente() {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.fachada = new Fachada();
+        this.llenarTablaClientes();
     }
 
     /**
@@ -29,7 +40,7 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
     private void initComponents() {
 
         btnRegistrarCliente = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
+        btnCerrarSesion = new javax.swing.JButton();
         btnEditarCliente = new javax.swing.JButton();
         btnConsultarCliente = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -53,12 +64,12 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
             }
         });
 
-        btnCancelar.setBackground(new java.awt.Color(255, 0, 0));
-        btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnCancelar.setText("Salir");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrarSesion.setBackground(new java.awt.Color(255, 0, 0));
+        btnCerrarSesion.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnCerrarSesion.setText("Cerrar Sesion");
+        btnCerrarSesion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
+                btnCerrarSesionActionPerformed(evt);
             }
         });
 
@@ -127,7 +138,7 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
 
         btnGuardarCliente1.setBackground(new java.awt.Color(51, 204, 0));
         btnGuardarCliente1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnGuardarCliente1.setText("Guardar cliente");
+        btnGuardarCliente1.setText("Ver detalles");
         btnGuardarCliente1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGuardarCliente1ActionPerformed(evt);
@@ -170,21 +181,24 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
                             .addComponent(btnConsultarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(43, 43, 43)
-                        .addComponent(btnCancelar)))
-                .addGap(18, 18, 18)
+                        .addComponent(btnCerrarSesion)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnGuardarCliente1))
-                .addContainerGap(50, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(186, 186, 186)
+                        .addComponent(btnGuardarCliente1)))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnGuardarCliente1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(83, 83, 83)
                 .addComponent(btnRegistrarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -193,22 +207,50 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(btnConsultarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCancelar)
+                .addComponent(btnCerrarSesion)
                 .addGap(19, 19, 19))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void llenarTablaClientes() {
+        List<Cliente> listaClientes = this.fachada.buscarTodasCliente();
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaConsultarCliente.getModel();
+        modeloTabla.setRowCount(0);
+        for (Cliente cliente : listaClientes) {
+            Object[] fila = new Object[5];
+            fila[0] = cliente.getIdcliente();
+            fila[1] = cliente.getNombre();
+            fila[2] = cliente.getTelefono();
+            fila[3] = cliente.getDireccion();
+            modeloTabla.addRow(fila);
+        }
+        this.centrarDatosTablaClientes();
+    }
+
+    private void centrarDatosTablaClientes() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaConsultarCliente.getColumnCount(); i++) {
+            this.tablaConsultarCliente.setDefaultRenderer(this.tablaConsultarCliente.getColumnClass(i), columna);
+        }
+    }
     private void btnRegistrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarClienteActionPerformed
         FrmRegistrarCliente frmRegCLiente = new FrmRegistrarCliente();
         frmRegCLiente.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnRegistrarClienteActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+    private void btnCerrarSesionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesionActionPerformed
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        if (respuesta == 0) {
+            FrmInicioSesion inicioSesion = new FrmInicioSesion();
+            inicioSesion.setVisible(true);
+            this.dispose();
+        }
 
-    }//GEN-LAST:event_btnCancelarActionPerformed
+    }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
     private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
         FrmEditarCliente frmEditarCliente = new FrmEditarCliente();
@@ -217,7 +259,9 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEditarClienteActionPerformed
 
     private void btnGuardarCliente1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarCliente1ActionPerformed
-        // TODO add your handling code here:
+        DlgDetalleCliente dlgDetalleCliente = new DlgDetalleCliente();
+        dlgDetalleCliente.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnGuardarCliente1ActionPerformed
 
     private void menuAdmVehiculosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmVehiculosMouseClicked
@@ -231,6 +275,12 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
         frmRegistroVenta.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_menuAdmVentasMouseClicked
+
+    public int idClienteElegido() {
+        int renglonElegido = this.tablaConsultarCliente.getSelectedRow();
+        Integer idCliente = (Integer) this.tablaConsultarCliente.getValueAt(renglonElegido, 0);
+        return idCliente;
+    }
 
     /**
      * @param args the command line arguments
@@ -268,7 +318,7 @@ public class FrmConsultarCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnConsultarCliente;
     private javax.swing.JButton btnEditarCliente;
     private javax.swing.JButton btnGuardarCliente1;

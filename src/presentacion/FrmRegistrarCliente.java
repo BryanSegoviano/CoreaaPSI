@@ -3,11 +3,12 @@ package presentacion;
 import controles.Fachada;
 import controles.IFachada;
 import dominio.Cliente;
+import javax.swing.JOptionPane;
 
 public class FrmRegistrarCliente extends javax.swing.JFrame {
 
     private IFachada fachada;
-    
+
     public FrmRegistrarCliente() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -37,9 +38,9 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
         txtTelefonoCliente = new javax.swing.JTextField();
         txtDireccionCliente = new javax.swing.JTextField();
         btnRegistrarCliente = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
         btnEditarCliente = new javax.swing.JButton();
         btnConsultarCliente = new javax.swing.JButton();
+        btnCerrarSesion2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuAdmVehiculos = new javax.swing.JMenu();
@@ -83,6 +84,11 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
         txtClienteNombre.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         txtTelefonoCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtTelefonoCliente.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtTelefonoClienteKeyReleased(evt);
+            }
+        });
 
         txtDireccionCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
@@ -160,15 +166,6 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
             }
         });
 
-        btnCancelar.setBackground(new java.awt.Color(255, 0, 0));
-        btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnCancelar.setText("Salir");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
-            }
-        });
-
         btnEditarCliente.setBackground(new java.awt.Color(255, 255, 255));
         btnEditarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnEditarCliente.setText("Editar Cliente");
@@ -183,6 +180,15 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
         btnConsultarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConsultarClienteActionPerformed(evt);
+            }
+        });
+
+        btnCerrarSesion2.setBackground(new java.awt.Color(255, 0, 0));
+        btnCerrarSesion2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnCerrarSesion2.setText("Cerrar Sesion");
+        btnCerrarSesion2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCerrarSesion2ActionPerformed(evt);
             }
         });
 
@@ -213,17 +219,15 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnConsultarCliente, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(btnRegistrarCliente)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(btnCancelar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnConsultarCliente, javax.swing.GroupLayout.Alignment.TRAILING))
-                            .addComponent(btnRegistrarCliente))))
+                        .addGap(9, 9, 9)
+                        .addComponent(btnCerrarSesion2)))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(19, Short.MAX_VALUE))
@@ -242,8 +246,8 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(btnConsultarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCancelar)
-                .addGap(30, 30, 30))
+                .addComponent(btnCerrarSesion2)
+                .addGap(20, 20, 20))
         );
 
         pack();
@@ -251,23 +255,41 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
 
     private void btnGuardarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarClienteActionPerformed
         this.guardarCliente();
+        this.vaciarCampos();
     }//GEN-LAST:event_btnGuardarClienteActionPerformed
-
-    private void guardarCliente(){
-        String nombre = this.txtClienteNombre.getText();
-        String telefono = this.txtTelefonoCliente.getText();
-        String direccion = this.txtDireccionCliente.getText();
-        Cliente cliente = new Cliente(direccion, nombre, telefono);
-        this.fachada.guardarCliente(cliente);
-    }
     
-    private void btnRegistrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarClienteActionPerformed
-        
-    }//GEN-LAST:event_btnRegistrarClienteActionPerformed
+    private void vaciarCampos(){
+        this.txtClienteNombre.setText("");
+        this.txtTelefonoCliente.setText("");
+        this.txtDireccionCliente.setText("");
+    }
+    private void guardarCliente() {
+        if (camposLlenos()) {
+            String nombre = this.txtClienteNombre.getText();
+            String telefono = this.txtTelefonoCliente.getText();
+            String direccion = this.txtDireccionCliente.getText();
+            Cliente cliente = new Cliente(direccion, nombre, telefono);
+            this.fachada.guardarCliente(cliente);
+            JOptionPane.showMessageDialog(this, "Cliente guardado exitósamente",
+                    "", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Debe llenar todos los campos",
+                    "", JOptionPane.WARNING_MESSAGE);
+        }
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        
-    }//GEN-LAST:event_btnCancelarActionPerformed
+    }
+
+    private boolean camposLlenos() {
+        if (this.txtClienteNombre.getText().equals("") || this.txtTelefonoCliente.getText().equals("") || this.txtDireccionCliente.getText().equals("")) {
+            return false;
+        }
+        return true;
+
+    }
+
+    private void btnRegistrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarClienteActionPerformed
+
+    }//GEN-LAST:event_btnRegistrarClienteActionPerformed
 
     private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
         FrmEditarCliente frmRegCLiente = new FrmEditarCliente();
@@ -293,7 +315,30 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnConsultarClienteActionPerformed
 
-        public static void main(String args[]) {
+    private void txtTelefonoClienteKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtTelefonoClienteKeyReleased
+        String telefono = txtTelefonoCliente.getText();
+        boolean isNumeric = telefono.chars().allMatch(Character::isDigit);
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.txtTelefonoCliente.setText("");
+            } else {
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_txtTelefonoClienteKeyReleased
+
+    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        if (respuesta == 0) {
+            FrmInicioSesion inicioSesion = new FrmInicioSesion();
+            inicioSesion.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
+
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -327,7 +372,7 @@ public class FrmRegistrarCliente extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCerrarSesion2;
     private javax.swing.JButton btnConsultarCliente;
     private javax.swing.JButton btnEditarCliente;
     private javax.swing.JButton btnGuardarCliente;

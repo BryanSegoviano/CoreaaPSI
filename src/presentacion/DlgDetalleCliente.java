@@ -1,13 +1,22 @@
 package presentacion;
 
+import controles.ControlReglasNegocio;
+import controles.IFachada;
+import dominio.Vehiculo;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 public class DlgDetalleCliente extends javax.swing.JFrame {
+
+    private List<Vehiculo> listaVehiculosCliente;
+    private ControlReglasNegocio controlReglasNegocio;
+    private IFachada fachada;
 
     public DlgDetalleCliente() {
         initComponents();
         this.setLocationRelativeTo(null);
-        
+        this.llenaTablaVehiculosCliente();
     }
-
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -90,8 +99,26 @@ public class DlgDetalleCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVolverDetalleClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverDetalleClienteActionPerformed
+        FrmConsultarCliente frmCliente = new FrmConsultarCliente();
+        frmCliente.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnVolverDetalleClienteActionPerformed
+
+    public void llenaTablaVehiculosCliente() {
+        FrmConsultarCliente frmConsultarClientes = new FrmConsultarCliente();
+
+        this.listaVehiculosCliente = this.controlReglasNegocio.recuperaVehiculoCliente(frmConsultarClientes.idClienteElegido());
+        List<Vehiculo> listaClientes = this.fachada.buscarTodasVehiculo();
+        DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaDetalleCliente.getModel();
+        modeloTabla.setRowCount(0);
+        for (Vehiculo vehiculo : listaClientes) {
+            Object[] fila = new Object[3];
+            fila[0] = vehiculo.getNombre();
+            fila[1] = vehiculo.getMarca();
+            fila[2] = vehiculo.getModelo();
+            modeloTabla.addRow(fila);
+        }
+    }
 
     /**
      * @param args the command line arguments

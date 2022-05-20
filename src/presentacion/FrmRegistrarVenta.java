@@ -106,7 +106,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jLabel16 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         tablaPiezas = new javax.swing.JTable();
-        btnCancelar = new javax.swing.JButton();
+        btnCerrarSesion2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuAdmClientes = new javax.swing.JMenu();
         menuAdmVehiculos = new javax.swing.JMenu();
@@ -538,12 +538,12 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))))
         );
 
-        btnCancelar.setBackground(new java.awt.Color(255, 0, 0));
-        btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnCancelar.setText("Salir");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrarSesion2.setBackground(new java.awt.Color(255, 0, 0));
+        btnCerrarSesion2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnCerrarSesion2.setText("Cerrar Sesion");
+        btnCerrarSesion2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
+                btnCerrarSesion2ActionPerformed(evt);
             }
         });
 
@@ -552,20 +552,17 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(4, 4, 4)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnEliminarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(btnRegistrarVenta)
-                                    .addComponent(btnEditarVenta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(btnConsultarVenta)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(42, 42, 42)
-                        .addComponent(btnCancelar)))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(4, 4, 4)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(btnEliminarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnRegistrarVenta)
+                                .addComponent(btnEditarVenta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnConsultarVenta))
+                    .addComponent(btnCerrarSesion2))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -573,22 +570,21 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(btnRegistrarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(btnEliminarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnEditarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnConsultarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(93, 93, 93)
-                        .addComponent(btnCancelar))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(83, 83, 83)
+                .addComponent(btnRegistrarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(btnEliminarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(btnEditarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(btnConsultarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCerrarSesion2)
+                .addGap(21, 21, 21))
         );
 
         menuAdmClientes.setText("Administrar Clientes");
@@ -672,14 +668,13 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Debes seleccionar un cliente",
                     "Advertencia", JOptionPane.INFORMATION_MESSAGE);
         } else {
+            if (rootPaneCheckingEnabled) {
+                //-----------------------------------------------------------------------------------------------
+            }
             this.llenaCamposCliente(renglonElegido);
             this.quitarEditables();
         }
     }//GEN-LAST:event_btnClienteExistenteActionPerformed
-
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-        this.salirAdministrarVentas();
-    }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnEditarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarVentaActionPerformed
         this.mostrarFrmEditarVenta();
@@ -759,6 +754,15 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_menuAdmVehiculosMouseClicked
 
+    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        if (respuesta == 0) {
+            FrmInicioSesion inicioSesion = new FrmInicioSesion();
+            inicioSesion.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
+
     public void cargarTablaClientes() {
         List<Cliente> listaClientes = this.fachada.buscarTodasCliente();
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaClientes.getModel();
@@ -773,14 +777,18 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     }
 
     private void llenaCamposCliente(int renglonElegido) {
-        Integer idCliente = (Integer) this.tablaClientes.getValueAt(renglonElegido, 0);
-        this.clienteRegistrado = this.fachada.buscarPorIDCliente(idCliente);
-        this.clienteDireccion.setText(clienteRegistrado.getDireccion());
-        this.clienteTel.setText(clienteRegistrado.getTelefono());
-        this.clienteNom.setText(clienteRegistrado.getNombre());
-        this.clienteYaRegistrado = true;
-        this.llenarComboboxVehiculosCliente();
-        this.llenarCamposVehiculo();
+        try {
+            Integer idCliente = (Integer) this.tablaClientes.getValueAt(renglonElegido, 0);
+            this.clienteRegistrado = this.fachada.buscarPorIDCliente(idCliente);
+            this.clienteDireccion.setText(clienteRegistrado.getDireccion());
+            this.clienteTel.setText(clienteRegistrado.getTelefono());
+            this.clienteNom.setText(clienteRegistrado.getNombre());
+            this.clienteYaRegistrado = true;
+            this.llenarComboboxVehiculosCliente();
+            this.llenarCamposVehiculo();
+        } catch (Exception e) {
+        }
+
     }
 
     private void quitarEditables() {
@@ -973,7 +981,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarServicio;
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCerrarSesion2;
     private javax.swing.JButton btnClienteExistente;
     private javax.swing.JButton btnConsultarVenta;
     private javax.swing.JButton btnEditarVenta;

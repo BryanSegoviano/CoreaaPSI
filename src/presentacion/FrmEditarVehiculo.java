@@ -61,7 +61,7 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
         tablaClientes = new javax.swing.JTable();
         btnEditarCliente = new javax.swing.JButton();
         btnConsultarCliente = new javax.swing.JButton();
-        btnCancelar = new javax.swing.JButton();
+        btnCerrarSesion2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuAdmClientes = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -99,6 +99,11 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
         vehiculoMarca.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
 
         vehiculoModelo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        vehiculoModelo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                vehiculoModeloKeyReleased(evt);
+            }
+        });
 
         btnGuardar.setBackground(new java.awt.Color(51, 204, 0));
         btnGuardar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -106,6 +111,12 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
         btnGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnGuardarActionPerformed(evt);
+            }
+        });
+
+        idVehiculo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                idVehiculoKeyReleased(evt);
             }
         });
 
@@ -265,12 +276,12 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
             }
         });
 
-        btnCancelar.setBackground(new java.awt.Color(255, 0, 0));
-        btnCancelar.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnCancelar.setText("Salir");
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrarSesion2.setBackground(new java.awt.Color(255, 0, 0));
+        btnCerrarSesion2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        btnCerrarSesion2.setText("Cerrar Sesion");
+        btnCerrarSesion2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
+                btnCerrarSesion2ActionPerformed(evt);
             }
         });
 
@@ -314,8 +325,8 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
                                     .addComponent(btnEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btnConsultarCliente, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(48, 48, 48)
-                                .addComponent(btnCancelar)))
+                                .addGap(26, 26, 26)
+                                .addComponent(btnCerrarSesion2)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -330,8 +341,8 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
                 .addGap(35, 35, 35)
                 .addComponent(btnConsultarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCancelar)
-                .addGap(34, 34, 34))
+                .addComponent(btnCerrarSesion2)
+                .addGap(25, 25, 25))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -385,6 +396,7 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
             }else{
                 JOptionPane.showMessageDialog(this, "Vehiculo no encontrado",
                     "Advertencia", JOptionPane.ERROR_MESSAGE);
+                this.idVehiculo.setText("");
             }
         } catch (Exception ex) {
             System.out.println(ex);
@@ -429,10 +441,6 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnEditarClienteActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
-
-    }//GEN-LAST:event_btnCancelarActionPerformed
-
     private void menuAdmVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmVentasMouseClicked
         FrmRegistrarVenta frmRegistroVenta = new FrmRegistrarVenta();
         frmRegistroVenta.setVisible(true);
@@ -450,6 +458,43 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
         frmConsultarVehiculo.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnConsultarClienteActionPerformed
+
+    private void idVehiculoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idVehiculoKeyReleased
+        String id = idVehiculo.getText();
+        boolean isNumeric = id.chars().allMatch(Character::isDigit);
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.idVehiculo.setText("");
+            } else {
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_idVehiculoKeyReleased
+
+    private void vehiculoModeloKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_vehiculoModeloKeyReleased
+        String id = vehiculoModelo.getText();
+        boolean isNumeric = id.chars().allMatch(Character::isDigit);
+        try {
+            if (!isNumeric) {
+                JOptionPane.showMessageDialog(this, "Debes singresar un numero",
+                        "Advertencia", JOptionPane.INFORMATION_MESSAGE);
+                this.vehiculoModelo.setText("");
+            } else {
+            }
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_vehiculoModeloKeyReleased
+
+    private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        if (respuesta == 0) {
+            FrmInicioSesion inicioSesion = new FrmInicioSesion();
+            inicioSesion.setVisible(true);
+            this.dispose();
+        }
+    }//GEN-LAST:event_btnCerrarSesion2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -489,7 +534,7 @@ public class FrmEditarVehiculo extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscarVehiculo;
-    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnCerrarSesion2;
     private javax.swing.JButton btnConsultarCliente;
     private javax.swing.JButton btnEditarCliente;
     private javax.swing.JButton btnGuardar;
