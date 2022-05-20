@@ -59,7 +59,7 @@ public class FrmInicioSesion extends javax.swing.JFrame {
 
         usuarioTF.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setText("COREAA");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

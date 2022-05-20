@@ -1,21 +1,25 @@
 package presentacion;
 
 import controles.ControlReglasNegocio;
+import controles.Fachada;
 import controles.IFachada;
+import dominio.Relclientevehiculo;
 import dominio.Vehiculo;
 import java.util.List;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 public class DlgDetalleCliente extends javax.swing.JFrame {
 
-    private List<Vehiculo> listaVehiculosCliente;
-    private ControlReglasNegocio controlReglasNegocio;
+    private int idCliente;
     private IFachada fachada;
 
-    public DlgDetalleCliente() {
+    public DlgDetalleCliente(int idCliente) {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.llenaTablaVehiculosCliente();
+        this.idCliente = idCliente;
+        this.fachada = new Fachada();
+        this.llenarTablaVehiculos(this.idCliente);
     }
 
     @SuppressWarnings("unchecked")
@@ -29,6 +33,7 @@ public class DlgDetalleCliente extends javax.swing.JFrame {
         btnVolverDetalleCliente = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Lista de vehiculos");
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("Vehiculos del cliente");
@@ -69,16 +74,16 @@ public class DlgDetalleCliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(114, 114, 114)
+                                .addGap(190, 190, 190)
                                 .addComponent(jLabel4))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(159, 159, 159)
+                                .addGap(235, 235, 235)
                                 .addComponent(btnVolverDetalleCliente)))
-                        .addGap(0, 117, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -99,60 +104,32 @@ public class DlgDetalleCliente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVolverDetalleClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverDetalleClienteActionPerformed
-        FrmConsultarCliente frmCliente = new FrmConsultarCliente();
-        frmCliente.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnVolverDetalleClienteActionPerformed
 
-    public void llenaTablaVehiculosCliente() {
-        FrmConsultarCliente frmConsultarClientes = new FrmConsultarCliente();
-
-        this.listaVehiculosCliente = this.controlReglasNegocio.recuperaVehiculoCliente(frmConsultarClientes.idClienteElegido());
-        List<Vehiculo> listaClientes = this.fachada.buscarTodasVehiculo();
+    private void llenarTablaVehiculos(int idCliente) {
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaDetalleCliente.getModel();
         modeloTabla.setRowCount(0);
-        for (Vehiculo vehiculo : listaClientes) {
-            Object[] fila = new Object[3];
-            fila[0] = vehiculo.getNombre();
-            fila[1] = vehiculo.getMarca();
-            fila[2] = vehiculo.getModelo();
-            modeloTabla.addRow(fila);
+        List<Relclientevehiculo> clienteVehiculo = this.fachada.buscarTodasRelclientevehiculo();
+        for (Relclientevehiculo relclientevehiculo : clienteVehiculo) {
+            int idrel = relclientevehiculo.getIdcliente().getIdcliente();
+            if (idrel == idCliente) {
+                Object[] fila = new Object[3];
+                fila[0] = relclientevehiculo.getIdvehiculo().getNombre();
+                fila[1] = relclientevehiculo.getIdvehiculo().getMarca();
+                fila[2] = relclientevehiculo.getIdvehiculo().getModelo();
+                modeloTabla.addRow(fila);
+            }
         }
+        this.centrarDatosTablaProductosBuscados();
     }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DlgDetalleCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DlgDetalleCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DlgDetalleCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DlgDetalleCliente.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private void centrarDatosTablaProductosBuscados() {
+        DefaultTableCellRenderer columna = new DefaultTableCellRenderer();
+        columna.setHorizontalAlignment(0);
+        for (int i = 0; i < this.tablaDetalleCliente.getColumnCount(); i++) {
+            this.tablaDetalleCliente.setDefaultRenderer(this.tablaDetalleCliente.getColumnClass(i), columna);
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new DlgDetalleCliente().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

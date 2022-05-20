@@ -565,7 +565,7 @@ public class FrmEliminarVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_menuAdmVehiculosMouseClicked
 
     private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Cerrar la sesión actual?");
         if (respuesta == 0) {
             FrmInicioSesion inicioSesion = new FrmInicioSesion();
             inicioSesion.setVisible(true);

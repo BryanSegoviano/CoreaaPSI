@@ -660,6 +660,11 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                 clienteYaRegistrado,
                 this.listaPieza);
         this.dlgTotalServicio.setVisible(true);
+        JOptionPane.showMessageDialog(this, "Venta guardada exitósamente",
+                "", JOptionPane.INFORMATION_MESSAGE);
+        this.dispose();
+        FrmRegistrarVenta frmVentaNueva = new FrmRegistrarVenta(); 
+        frmVentaNueva.setVisible(true);
     }
 
     private void btnClienteExistenteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteExistenteActionPerformed
@@ -755,7 +760,7 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     }//GEN-LAST:event_menuAdmVehiculosMouseClicked
 
     private void btnCerrarSesion2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSesion2ActionPerformed
-        int respuesta = JOptionPane.showConfirmDialog(this, "¿Serrar la sesion actual?");
+        int respuesta = JOptionPane.showConfirmDialog(this, "¿Cerrar la sesión actual?");
         if (respuesta == 0) {
             FrmInicioSesion inicioSesion = new FrmInicioSesion();
             inicioSesion.setVisible(true);
@@ -927,10 +932,9 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
             return false;
         }
 
-        if (this.isNumeric(telefono) == false) {
-            return false;
-        }
-
+//        if (this.isNumeric(telefono) == false) {
+//            return false;
+//        }
         return true;
     }
 
