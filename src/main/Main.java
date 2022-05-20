@@ -6,6 +6,7 @@ import accesoDatos.VehiculoJpaController;
 import dominio.Cliente;
 import dominio.Relclientevehiculo;
 import dominio.Vehiculo;
+import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 //
@@ -18,7 +19,12 @@ public class Main {
         ClienteJpaController clientes = new ClienteJpaController(et);
         VehiculoJpaController vehiculos = new VehiculoJpaController(et);
         RelclientevehiculoJpaController clientevehiculos = new RelclientevehiculoJpaController(et);
-
+        
+//        System.out.println(vehiculos.findVehiculo(27));
+//        List<Relclientevehiculo> clienteVehiculo = clientevehiculos.findRelclientevehiculoEntities();
+//        for (Relclientevehiculo relclientevehiculo : clienteVehiculo) {
+//            System.out.println(relclientevehiculo.getIdvehiculo());
+//        }
         //CLIENTES
         //Agregar cliente       
 //        Cliente cliente = new Cliente("P.O", "Maria Juarez", "6441572891");
