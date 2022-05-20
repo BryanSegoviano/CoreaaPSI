@@ -50,6 +50,10 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
         tablaVentas = new javax.swing.JTable();
         jSeparator1 = new javax.swing.JSeparator();
         btnCancelar = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuAdmClientes = new javax.swing.JMenu();
+        menuAdmVehiculos = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Administrar ventas");
@@ -230,6 +234,28 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        menuAdmClientes.setText("Administrar Clientes");
+        menuAdmClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmClientesMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmClientes);
+
+        menuAdmVehiculos.setText("Administrar Vehiculos");
+        menuAdmVehiculos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmVehiculosMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmVehiculos);
+
+        jMenu3.setText("Administrar Ventas");
+        jMenu3.setEnabled(false);
+        jMenuBar1.add(jMenu3);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -263,6 +289,18 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
     private void btnEditarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarVentaActionPerformed
         this.mostrarFrmEditarVenta();
     }//GEN-LAST:event_btnEditarVentaActionPerformed
+
+    private void menuAdmClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmClientesMouseClicked
+        FrmRegistrarCliente frmRegistrarCliente = new FrmRegistrarCliente();
+        frmRegistrarCliente.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmClientesMouseClicked
+
+    private void menuAdmVehiculosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmVehiculosMouseClicked
+        FrmRegistrarVehiculo frmAdmVehiculos = new FrmRegistrarVehiculo();
+        frmAdmVehiculos.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmVehiculosMouseClicked
 
     private void consultarVenta() {
         int indiceFilaSeleccionada = this.tablaVentas.getSelectedRow();
@@ -333,10 +371,14 @@ public class FrmConsultarVentas extends javax.swing.JFrame {
     private javax.swing.JButton btnRegistrarVenta;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JMenu menuAdmClientes;
+    private javax.swing.JMenu menuAdmVehiculos;
     private javax.swing.JTable tablaVentas;
     // End of variables declaration//GEN-END:variables
 }

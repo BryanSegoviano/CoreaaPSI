@@ -96,6 +96,10 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         totalVentaTF = new javax.swing.JTextField();
         jLabel18 = new javax.swing.JLabel();
         btnCancelar = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuAdmClientes = new javax.swing.JMenu();
+        menuAdmVehiculos = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Administrar ventas");
@@ -502,23 +506,44 @@ public class FrmEditarVenta extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(btnRegistrarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(btnEliminarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnEditarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnConsultarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancelar)))
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(83, 83, 83)
+                .addComponent(btnRegistrarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(btnEliminarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(btnEditarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(btnConsultarVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancelar)
+                .addGap(37, 37, 37))
         );
+
+        menuAdmClientes.setText("Administrar Clientes");
+        menuAdmClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmClientesMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmClientes);
+
+        menuAdmVehiculos.setText("Administrar Vehiculos");
+        menuAdmVehiculos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmVehiculosMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmVehiculos);
+
+        jMenu3.setText("Administrar Ventas");
+        jMenu3.setEnabled(false);
+        jMenuBar1.add(jMenu3);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -671,6 +696,18 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     private void btnAgregarServicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarServicioActionPerformed
         this.agregarServicioVenta();
     }//GEN-LAST:event_btnAgregarServicioActionPerformed
+
+    private void menuAdmClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmClientesMouseClicked
+        FrmRegistrarCliente frmRegistrarCliente = new FrmRegistrarCliente();
+        frmRegistrarCliente.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmClientesMouseClicked
+
+    private void menuAdmVehiculosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmVehiculosMouseClicked
+        FrmRegistrarVehiculo frmAdmVehiculos = new FrmRegistrarVehiculo();
+        frmAdmVehiculos.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmVehiculosMouseClicked
 
     private void agregarServicioVenta() {
         this.dlgDetalleServicio.setVisible(true);
@@ -847,6 +884,8 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -854,6 +893,8 @@ public class FrmEditarVenta extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField marcaTF;
+    private javax.swing.JMenu menuAdmClientes;
+    private javax.swing.JMenu menuAdmVehiculos;
     private javax.swing.JTextField modeloTF;
     private javax.swing.JTextField nombreTF;
     private javax.swing.JTextPane notasTF;

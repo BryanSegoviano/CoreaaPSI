@@ -25,6 +25,7 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
 
     public FrmConsultarVehiculo() {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.fachada = new Fachada();
         this.llenarTablaVehiculos();
     }
@@ -45,9 +46,12 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
         tablaVehiculos = new javax.swing.JTable();
         btnRegistrarCliente = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        btnEliminarCliente = new javax.swing.JButton();
         btnEditarCliente = new javax.swing.JButton();
         btnConsultarCliente = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuAdmClientes3 = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+        menuAdmVentas = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,7 +87,7 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
                 .addGap(157, 157, 157)
                 .addComponent(jLabel1)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,15 +118,6 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
             }
         });
 
-        btnEliminarCliente.setBackground(new java.awt.Color(255, 255, 255));
-        btnEliminarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnEliminarCliente.setText("Eliminar Vehículo");
-        btnEliminarCliente.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarClienteActionPerformed(evt);
-            }
-        });
-
         btnEditarCliente.setBackground(new java.awt.Color(255, 255, 255));
         btnEditarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnEditarCliente.setText("Editar Vehículo");
@@ -134,45 +129,67 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
 
         btnConsultarCliente.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnConsultarCliente.setText("Consultar Vehículo");
+        btnConsultarCliente.setEnabled(false);
+
+        menuAdmClientes3.setText("Administrar Clientes");
+        menuAdmClientes3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmClientes3MouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmClientes3);
+
+        jMenu2.setText("Administrar Vehiculos");
+        jMenu2.setEnabled(false);
+        jMenuBar1.add(jMenu2);
+
+        menuAdmVentas.setText("Administrar Ventas");
+        menuAdmVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmVentasMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmVentas);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnEliminarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnRegistrarCliente)
-                    .addComponent(btnEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnConsultarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(btnRegistrarCliente))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(btnCancelar))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnEditarCliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnConsultarCliente, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(47, 47, 47)
-                .addComponent(btnCancelar)
-                .addGap(76, 653, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(btnRegistrarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(btnEliminarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addComponent(btnConsultarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(44, 44, 44)
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(83, 83, 83)
+                .addComponent(btnRegistrarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30)
+                .addComponent(btnEditarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
+                .addComponent(btnConsultarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnCancelar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(49, 49, 49))
         );
 
         pack();
@@ -186,7 +203,7 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
             String nombreCliente = "";
             List<Relclientevehiculo> clienteVehiculo = this.fachada.buscarTodasRelclientevehiculo();
             for (Relclientevehiculo relclientevehiculo : clienteVehiculo) {
-                if(relclientevehiculo.getIdvehiculo().getIdvehiculo() == vehiculo.getIdvehiculo()){
+                if (relclientevehiculo.getIdvehiculo().getIdvehiculo() == vehiculo.getIdvehiculo()) {
                     Cliente cliente = relclientevehiculo.getIdcliente();
                     nombreCliente = cliente.getNombre();
                     break;
@@ -212,20 +229,32 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
     }
 
     private void btnRegistrarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarClienteActionPerformed
-
+        FrmRegistrarVehiculo frmRegistraVehiculo = new FrmRegistrarVehiculo();
+        frmRegistraVehiculo.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnRegistrarClienteActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
 
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
-
-    }//GEN-LAST:event_btnEliminarClienteActionPerformed
-
     private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
-
+        FrmEditarVehiculo frmEditarVehiculo = new FrmEditarVehiculo();
+        frmEditarVehiculo.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnEditarClienteActionPerformed
+
+    private void menuAdmVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmVentasMouseClicked
+        FrmRegistrarVenta frmRegistroVenta = new FrmRegistrarVenta();
+        frmRegistroVenta.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmVentasMouseClicked
+
+    private void menuAdmClientes3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmClientes3MouseClicked
+        FrmRegistrarCliente frmRegistrarCliente = new FrmRegistrarCliente();
+        frmRegistrarCliente.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmClientes3MouseClicked
 
     /**
      * @param args the command line arguments
@@ -267,12 +296,18 @@ public class FrmConsultarVehiculo extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConsultarCliente;
     private javax.swing.JButton btnEditarCliente;
-    private javax.swing.JButton btnEliminarCliente;
     private javax.swing.JButton btnRegistrarCliente;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JMenu menuAdmClientes;
+    private javax.swing.JMenu menuAdmClientes1;
+    private javax.swing.JMenu menuAdmClientes2;
+    private javax.swing.JMenu menuAdmClientes3;
+    private javax.swing.JMenu menuAdmVentas;
     private javax.swing.JTable tablaVehiculos;
     // End of variables declaration//GEN-END:variables
 }

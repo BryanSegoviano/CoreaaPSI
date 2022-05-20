@@ -41,7 +41,6 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
         btnRegistrarVehiculo = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        btnEliminarVehiculo = new javax.swing.JButton();
         btnEditarVehiculo = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
@@ -59,11 +58,16 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaClientes = new javax.swing.JTable();
         btnConsultarVehiculo = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuAdmClientes = new javax.swing.JMenu();
+        jMenu2 = new javax.swing.JMenu();
+        menuAdmVentas = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         btnRegistrarVehiculo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnRegistrarVehiculo.setText("Registrar Vehículo");
+        btnRegistrarVehiculo.setEnabled(false);
         btnRegistrarVehiculo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRegistrarVehiculoActionPerformed(evt);
@@ -76,15 +80,6 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCancelarActionPerformed(evt);
-            }
-        });
-
-        btnEliminarVehiculo.setBackground(new java.awt.Color(255, 255, 255));
-        btnEliminarVehiculo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnEliminarVehiculo.setText("Eliminar Vehículo");
-        btnEliminarVehiculo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarVehiculoActionPerformed(evt);
             }
         });
 
@@ -111,19 +106,19 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("Nombre:");
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel3.setText("Información del vehículo");
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel4.setText("Ingrese los datos del nuevo cliente");
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel5.setText("Marca:");
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel6.setText("Modelo:");
 
         txtVehiculoNombre.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -158,54 +153,54 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jSeparator1)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(0, 119, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGap(106, 106, 106))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(157, 157, 157)
                         .addComponent(jLabel1))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel2Layout.createSequentialGroup()
-                                    .addComponent(jLabel2)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                    .addComponent(txtVehiculoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jLabel6)
+                        .addGap(21, 21, 21)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel2)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtModeloVehiculo))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                                        .addComponent(jLabel5)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtMarcaVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addComponent(jLabel3)))
+                                        .addComponent(txtVehiculoNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                            .addComponent(jLabel6)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(txtModeloVehiculo))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                            .addComponent(jLabel5)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(txtMarcaVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jLabel3))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGap(110, 110, 110)
+                                .addComponent(jLabel7))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(124, 124, 124)
-                        .addComponent(jLabel7))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(180, 180, 180)
+                        .addGap(177, 177, 177)
                         .addComponent(btnGuardarVehiculo))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(108, 108, 108)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel4))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addGap(46, 46, 46)
+                .addGap(18, 18, 18)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addGap(32, 32, 32)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -223,13 +218,40 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                 .addComponent(jLabel7)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btnGuardarVehiculo)
-                .addGap(20, 20, 20))
+                .addContainerGap(34, Short.MAX_VALUE))
         );
 
         btnConsultarVehiculo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnConsultarVehiculo.setText("Consultar Vehículo");
+        btnConsultarVehiculo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarVehiculoActionPerformed(evt);
+            }
+        });
+
+        menuAdmClientes.setText("Administrar Clientes");
+        menuAdmClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmClientesMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmClientes);
+
+        jMenu2.setText("Administrar Vehiculos");
+        jMenu2.setEnabled(false);
+        jMenuBar1.add(jMenu2);
+
+        menuAdmVentas.setText("Administrar Ventas");
+        menuAdmVentas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmVentasMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmVentas);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -239,37 +261,35 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnEliminarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnRegistrarVehiculo)
-                            .addComponent(btnEditarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnConsultarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(btnRegistrarVehiculo))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(47, 47, 47)
-                        .addComponent(btnCancelar)))
+                        .addGap(50, 50, 50)
+                        .addComponent(btnCancelar))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnEditarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnConsultarVehiculo, javax.swing.GroupLayout.Alignment.TRAILING))))
                 .addGap(18, 18, 18)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(btnRegistrarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
-                        .addComponent(btnEliminarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnEditarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addComponent(btnConsultarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancelar)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(83, 83, 83)
+                .addComponent(btnRegistrarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(34, 34, 34)
+                .addComponent(btnEditarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
+                .addComponent(btnConsultarVehiculo, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCancelar)
+                .addGap(33, 33, 33))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -283,18 +303,34 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnCancelarActionPerformed
 
-    private void btnEliminarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarVehiculoActionPerformed
-
-    }//GEN-LAST:event_btnEliminarVehiculoActionPerformed
-
     private void btnEditarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarVehiculoActionPerformed
-
+        FrmEditarVehiculo frmEditarVehiculo = new FrmEditarVehiculo();
+        frmEditarVehiculo.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnEditarVehiculoActionPerformed
 
     private void btnGuardarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarVehiculoActionPerformed
         this.registrarVehiculo();
     }//GEN-LAST:event_btnGuardarVehiculoActionPerformed
-    
+
+    private void menuAdmVentasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmVentasMouseClicked
+        FrmRegistrarVenta frmRegistroVenta = new FrmRegistrarVenta();
+        frmRegistroVenta.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmVentasMouseClicked
+
+    private void menuAdmClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmClientesMouseClicked
+        FrmRegistrarCliente frmRegistrarCliente = new FrmRegistrarCliente();
+        frmRegistrarCliente.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmClientesMouseClicked
+
+    private void btnConsultarVehiculoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarVehiculoActionPerformed
+        FrmConsultarVehiculo frmConsultarVehiculo = new FrmConsultarVehiculo();
+        frmConsultarVehiculo.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnConsultarVehiculoActionPerformed
+
     private void registrarVehiculo() {
         int renglonElegido = this.tablaClientes.getSelectedRow();
 
@@ -312,10 +348,18 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
             Cliente cliente = this.fachada.buscarPorIDCliente(idCliente);
             Relclientevehiculo relClientevehiculo = new Relclientevehiculo(cliente, vehiculo);
             this.fachada.guardarRelclientevehiculo(relClientevehiculo);
+            JOptionPane.showMessageDialog(this, "Vehiculo guardado exitósamente",
+                    "", JOptionPane.INFORMATION_MESSAGE);
+            this.vaciarCampos();
         }
-
     }
 
+    public void vaciarCampos(){
+        this.txtMarcaVehiculo.setText("");
+        this.txtModeloVehiculo.setText("");
+        this.txtVehiculoNombre.setText("");
+    }
+    
     public void cargarTablaClientes() {
         List<Cliente> listaClientes = this.fachada.buscarTodasCliente();
         DefaultTableModel modeloTabla = (DefaultTableModel) this.tablaClientes.getModel();
@@ -379,7 +423,6 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnConsultarVehiculo;
     private javax.swing.JButton btnEditarVehiculo;
-    private javax.swing.JButton btnEliminarVehiculo;
     private javax.swing.JButton btnGuardarVehiculo;
     private javax.swing.JButton btnRegistrarVehiculo;
     private javax.swing.JLabel jLabel1;
@@ -389,9 +432,13 @@ public class FrmRegistrarVehiculo extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JMenu menuAdmClientes;
+    private javax.swing.JMenu menuAdmVentas;
     private javax.swing.JTable tablaClientes;
     private javax.swing.JTextField txtMarcaVehiculo;
     private javax.swing.JTextField txtModeloVehiculo;

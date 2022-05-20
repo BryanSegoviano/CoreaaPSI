@@ -107,6 +107,10 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         tablaPiezas = new javax.swing.JTable();
         btnCancelar = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        menuAdmClientes = new javax.swing.JMenu();
+        menuAdmVehiculos = new javax.swing.JMenu();
+        jMenu3 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Administrar ventas");
@@ -587,6 +591,28 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        menuAdmClientes.setText("Administrar Clientes");
+        menuAdmClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmClientesMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmClientes);
+
+        menuAdmVehiculos.setText("Administrar Vehiculos");
+        menuAdmVehiculos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                menuAdmVehiculosMouseClicked(evt);
+            }
+        });
+        jMenuBar1.add(menuAdmVehiculos);
+
+        jMenu3.setText("Administrar Ventas");
+        jMenu3.setEnabled(false);
+        jMenuBar1.add(jMenu3);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -720,6 +746,18 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
         } else {
         }
     }//GEN-LAST:event_clienteTelKeyReleased
+
+    private void menuAdmClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmClientesMouseClicked
+        FrmRegistrarCliente frmRegistrarCliente = new FrmRegistrarCliente();
+        frmRegistrarCliente.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmClientesMouseClicked
+
+    private void menuAdmVehiculosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuAdmVehiculosMouseClicked
+        FrmRegistrarVehiculo frmAdmVehiculos = new FrmRegistrarVehiculo();
+        frmAdmVehiculos.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_menuAdmVehiculosMouseClicked
 
     public void cargarTablaClientes() {
         List<Cliente> listaClientes = this.fachada.buscarTodasCliente();
@@ -964,6 +1002,8 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -974,6 +1014,8 @@ public class FrmRegistrarVenta extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextField marcaTF;
+    private javax.swing.JMenu menuAdmClientes;
+    private javax.swing.JMenu menuAdmVehiculos;
     private javax.swing.JTextField modeloTF;
     private javax.swing.JTextField nombreTF;
     private javax.swing.JTextPane notasTF;
